@@ -10,9 +10,6 @@ export class Root {
     static instance: Root;
     animatedElements: IAnimatedElement[] = [];
     
-    // Stores the vertical rotation value based on scroll
-    scrollRotation: number = 0;
-    
     // NEW: Static variable for React to read the zoom level
     static zoomPercent: number = 0;
 
@@ -60,7 +57,7 @@ export class Root {
         this.camera.position.z = 5;
         this.camera.updateProjectionMatrix();
 
-        // Attach controls to canvas to prevent blocking UI touches
+        // Attach controls to canvas so they don't block UI touches
         this.controls = new OrbitControls(this.camera, this.canvas);
         
         this.controls.enableZoom = false; 
@@ -68,13 +65,7 @@ export class Root {
         this.controls.maxDistance = 30; 
         this.controls.target.set(0, 0, 0);
 
-        // Use window scroll for reliable cross‑platform behaviour
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            const maxScroll = document.body.scrollHeight - window.innerHeight;
-            const scrollPercentage = maxScroll > 0 ? scrollY / maxScroll : 0;
-            this.scrollRotation = scrollPercentage * Math.PI * 2;
-        });
+        // No scroll rotation – we remove the event listener
     }
 
     postProcessing?: PostProcessing;
@@ -102,12 +93,13 @@ export class Root {
             const dt: number = this.clock.getDelta();
             const elapsed: number = this.clock.getElapsedTime();
 
-            this.scene.rotation.x = this.scrollRotation;
+            // Removed scene.rotation.x = this.scrollRotation;
+
             this.controls!.update(dt);
             this.animatedElements.forEach((element) => element.update(dt, elapsed));
             this.postProcessing!.render();
 
-            // NEW: UPDATE ZOOM PERCENTAGE FOR HUD
+            // UPDATE ZOOM PERCENTAGE FOR HUD
             if (this.controls) {
                 const zoomRange = this.controls.maxDistance - this.controls.minDistance;
                 const currentZoom = this.camera.position.z - this.controls.minDistance;

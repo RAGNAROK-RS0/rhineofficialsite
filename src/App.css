@@ -13,7 +13,7 @@
   100% { opacity: 0.4; transform: scale(1); }
 }
 
-/* The canvas sits behind the UI and does not block touch interactions */
+/* Canvas – background, no touch capture */
 #threecanvas {
   position: fixed;
   top: 0;
@@ -21,10 +21,10 @@
   width: 100vw;
   height: 100vh;
   z-index: 0;
-  pointer-events: none;  /* Allows touches to reach the scrollable UI */
+  pointer-events: none;  /* crucial: lets touches reach the UI */
 }
 
-/* Scrollable container – now receives all pointer events */
+/* Scrollable container – receives all touch events */
 #app {
   position: relative;
   z-index: 10;
@@ -33,11 +33,11 @@
   overflow-y: auto;
   overflow-x: hidden;
   background: transparent;
-  pointer-events: auto;   /* Ensures scrolling works everywhere */
-  -webkit-overflow-scrolling: touch;  /* Smooth inertial scroll on iOS */
+  pointer-events: auto;   /* allows scrolling everywhere */
+  -webkit-overflow-scrolling: touch;  /* smooth iOS scroll */
 }
 
-/* Interactive elements remain clickable */
+/* Interactive UI elements */
 header, main, section, footer, button, .snake-btn {
   pointer-events: auto;
 }
