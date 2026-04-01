@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import '../App';
-import './Admin';
+import '../App.css';
+import '../Admin.css';
 import WebGPU from 'three/examples/jsm/capabilities/WebGPU.js';
 import { RhineLogo } from '../components/GFX';
 import { Root } from '../lib/Root';
