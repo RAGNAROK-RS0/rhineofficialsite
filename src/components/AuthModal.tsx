@@ -76,9 +76,9 @@ export default function AuthModal({ isOpen, onClose, themeColor }: AuthModalProp
   };
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/50" onClick={onClose}>
       <div
-        className="relative w-full max-w-md bg-black/30 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl"
+        className="relative w-full max-w-md bg-white/5 backdrop-blur-md backdrop-saturate-125 border border-white/10 rounded-2xl shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -93,7 +93,7 @@ export default function AuthModal({ isOpen, onClose, themeColor }: AuthModalProp
 
         <div className="p-6">
           <div className="flex justify-center mb-6">
-            <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>

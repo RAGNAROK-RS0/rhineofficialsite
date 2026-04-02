@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
   open: boolean;
@@ -23,9 +24,11 @@ export default function SideMenu({
 }: Props) {
   const [visible, setVisible] = useState(open);
   useEffect(() => setVisible(open), [open]);
+  const navigate = useNavigate();
 
-  const mobileGlass = 'bg-[rgba(0,0,0,0.62)] backdrop-blur-sm backdrop-saturate-110 border-l border-white/6';
-  const topGlass = 'bg-[rgba(6,6,6,0.46)] backdrop-blur-sm backdrop-saturate-120 border-b border-white/6';
+  // Updated glass styles to match header/footer
+  const mobileGlass = 'bg-white/5 backdrop-blur-md backdrop-saturate-125 border-l border-white/10';
+  const topGlass = 'bg-white/5 backdrop-blur-md backdrop-saturate-125 border-b border-white/10';
 
   const nav = [
     {
@@ -50,6 +53,12 @@ export default function SideMenu({
     },
   ];
 
+  const handleItemClick = (category: string, item: string) => {
+    onClose();
+    const slug = item.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    navigate(`/${category.toLowerCase()}/${slug}`);
+  };
+
   if (anchor === 'right') {
     return (
       <div
@@ -63,40 +72,38 @@ export default function SideMenu({
         <div className={`${mobileGlass} h-full flex flex-col shadow-2xl`}>
           <div className="p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-sm bg-white/5 flex items-center justify-center text-white font-bold">R</div>
+              <div className="w-10 h-10 rounded-sm bg-white/20 flex items-center justify-center text-white font-bold">R</div>
               <div className="text-white font-semibold">Rhine</div>
             </div>
+
+            {/* Login & Register buttons – clearly labeled */}
             <div className="flex items-center gap-2">
               <button
                 onClick={onLogin}
-                title="Login"
-                className="p-2 rounded-md hover:bg-white/5 transition-colors text-white"
+                className="px-3 py-1.5 text-sm font-medium text-white/90 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
                 aria-label="Login"
               >
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M15 3v4" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M8 21v-2a4 4 0 0 1 4-4h5" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M17 11l4-4-4-4" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+                Login
               </button>
               <button
                 onClick={onRegister}
-                title="Register"
-                className="p-2 rounded-md bg-gradient-to-tr from-indigo-500 to-indigo-400 text-white shadow"
+                className="px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-indigo-500 to-indigo-400 rounded-full hover:opacity-90 transition-colors"
                 aria-label="Register"
               >
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M12 12v6" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M8 12a4 4 0 1 1 8 0" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+                Register
               </button>
-              <button onClick={onClose} className="ml-2 p-2 rounded-md hover:bg-white/5 text-white" aria-label="Close menu">
+              <button
+                onClick={onClose}
+                className="p-2 rounded-md hover:bg-white/10 text-white"
+                aria-label="Close menu"
+              >
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path d="M6 6l12 12M6 18L18 6" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
             </div>
           </div>
+
           <nav className="flex-1 overflow-auto px-6 py-8">
             <ul className="space-y-6">
               {nav.map((section) => (
@@ -106,11 +113,7 @@ export default function SideMenu({
                     {section.items.map((it) => (
                       <button
                         key={it}
-                        onClick={() => {
-                          onClose();
-                          const id = it.toLowerCase().replace(/[^a-z0-9]+/gi, '-');
-                          setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 120);
-                        }}
+                        onClick={() => handleItemClick(section.title, it)}
                         className="block w-full text-left text-xl font-semibold text-white/95 hover:text-white transition-colors"
                       >
                         {it}
@@ -121,7 +124,8 @@ export default function SideMenu({
               ))}
             </ul>
           </nav>
-          <div className="p-4 border-t border-[rgba(255,255,255,0.04)] text-white/70 text-sm flex items-center justify-between">
+
+          <div className="p-4 border-t border-white/10 text-white/70 text-sm flex items-center justify-between">
             <div>© 2026 Rhine</div>
             <div className="flex gap-3">
               <a className="hover:text-white">X/Twitter</a>
@@ -157,7 +161,7 @@ export default function SideMenu({
         <div className="h-full flex flex-col">
           <div className="p-6 flex items-start justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-sm bg-white/5 flex items-center justify-center text-white font-bold">R</div>
+              <div className="w-10 h-10 rounded-sm bg-white/20 flex items-center justify-center text-white font-bold">R</div>
               <div className="text-white font-semibold">Rhine</div>
             </div>
             <div className="flex items-center gap-3">
@@ -174,11 +178,7 @@ export default function SideMenu({
                   {section.items.map((it) => (
                     <button
                       key={it}
-                      onClick={() => {
-                        onClose();
-                        const id = it.toLowerCase().replace(/[^a-z0-9]+/gi, '-');
-                        setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 120);
-                      }}
+                      onClick={() => handleItemClick(section.title, it)}
                       className="block hover:text-white"
                     >
                       {it}
@@ -188,7 +188,7 @@ export default function SideMenu({
               </div>
             ))}
           </div>
-          <div className="p-4 border-t border-[rgba(255,255,255,0.04)] flex items-center justify-between text-white/70">
+          <div className="p-4 border-t border-white/10 flex items-center justify-between text-white/70">
             <div className="text-sm">© 2026 Rhine Solution</div>
             <div className="flex gap-3">
               <button onClick={onLogin} className="btn btn-ghost btn-sm">
