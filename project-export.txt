@@ -1,4 +1,4 @@
-﻿=== C:\Users\teoal\Desktop\rhineofficialsite\src\components\AuthModal.tsx ===
+﻿=== C:\Users\teoal\Desktop\rhineofficialsite\src\components\AuthModal.tsx === ready to lunch 
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
 
