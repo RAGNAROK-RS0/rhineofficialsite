@@ -70,6 +70,17 @@ export default function Header({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [megaMenuOpen]);
 
+  // Improved: Close mega menu on ESC key press
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && megaMenuOpen) {
+        setMegaMenuOpen(false);
+      }
+    };
+    document.addEventListener('keydown', handleEscKey);
+    return () => document.removeEventListener('keydown', handleEscKey);
+  }, [megaMenuOpen]);
+
   const handleCategoryClick = (category: string) => {
     navigate(`/${category.toLowerCase()}`);
     setMegaMenuOpen(false);
@@ -160,7 +171,7 @@ export default function Header({
         </div>
       </header>
 
-      {/* Desktop Mega Menu */}
+      {/* Desktop Mega Menu - Removed the "naked style" Close button */}
       {megaMenuOpen && (
         <div
           ref={megaMenuRef}
@@ -169,18 +180,12 @@ export default function Header({
         >
           <div className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
             <div className="container mx-auto px-8 py-8">
-              <div className="flex items-start justify-between mb-6">
+              {/* Header section without the naked Close button */}
+              <div className="flex items-start justify-start mb-6">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-sm bg-white/20 flex items-center justify-center text-white font-bold">R</div>
                   <div className="text-white font-semibold">Rhine</div>
                 </div>
-                <button
-                  onClick={closeMegaMenu}
-                  className="btn btn-ghost btn-sm text-white hover:bg-white/10"
-                  aria-label="Close"
-                >
-                  Close
-                </button>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-white/90">

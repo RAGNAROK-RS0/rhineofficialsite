@@ -12,20 +12,30 @@ interface LayoutProps {
 
 export default function Layout({
   children,
-  themeColor = 'white',
+  themeColor = '#4f46e5',
   showAuthButtons = false,
   disableSideMenu = false,
   onLogoClick
 }: LayoutProps) {
+  // Use the same glassmorphism / backdrop style as the header for the app background.
+  const backgroundStyle: React.CSSProperties = {
+    backgroundImage: 'linear-gradient(90deg, rgba(255,255,255,0.02), rgba(0,0,0,0))',
+    WebkitBackdropFilter: 'saturate(125%) blur(8px)'
+  };
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="app-background min-h-screen flex flex-col" style={backgroundStyle}>
       <Header
         themeColor={themeColor}
         showAuthButtons={showAuthButtons}
         disableSideMenu={disableSideMenu}
         onLogoClick={onLogoClick}
       />
-      <main className="flex-1 pt-[72px]">{children}</main>
+
+      <main className="pt-[72px] min-h-screen flex-1">
+        {children}
+      </main>
+
       <Footer themeColor={themeColor} />
     </div>
   );
