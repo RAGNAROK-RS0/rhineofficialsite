@@ -87,14 +87,29 @@ header, main, section, footer, button, .snake-btn {
   animation: status-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - glassy style, accessible contrast */
 #app::-webkit-scrollbar {
-  width: 5px;
+  width: 10px;
+  height: 10px;
+}
+#app::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.02);
+  border-radius: 10px;
 }
 #app::-webkit-scrollbar-thumb {
-  background: white;
-  opacity: 0.1;
-  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.06));
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4) inset;
+}
+#app::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0.12));
+}
+
+/* Firefox */
+#app {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.12) rgba(255,255,255,0.02);
 }
 
 .side-indicator {

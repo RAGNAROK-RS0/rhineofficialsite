@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 
 type Tab = 'login' | 'register' | 'forgot';
@@ -18,6 +19,7 @@ export default function AuthModal({ isOpen, onClose, themeColor }: AuthModalProp
   const [error, setError] = useState<string | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const previouslyFocusedElement = useRef<HTMLElement | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isOpen) {
@@ -71,11 +73,9 @@ export default function AuthModal({ isOpen, onClose, themeColor }: AuthModalProp
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
-
-  const isValidEmail = (e: string) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e);
+  const isValidEmail = (e: string) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e);
   const isStrongPassword = (p: string) => p.length >= 8;
-
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     if (!isValidEmail(email)) return setError('Invalid email');
@@ -84,15 +84,16 @@ export default function AuthModal({ isOpen, onClose, themeColor }: AuthModalProp
     try {
       const { data, error: authErr } = await supabase.auth.signInWithPassword({ email, password });
       if (authErr) throw authErr;
+      // On successful login, close modal and navigate to dashboard
       onClose();
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err?.message || 'Login failed');
     } finally {
       setLoading(false);
     }
   };
-
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     if (!isValidEmail(email)) return setError('Invalid email');
@@ -103,14 +104,14 @@ export default function AuthModal({ isOpen, onClose, themeColor }: AuthModalProp
       const { data, error: authErr } = await supabase.auth.signUp({ email, password });
       if (authErr) throw authErr;
       onClose();
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err?.message || 'Registration failed');
     } finally {
       setLoading(false);
     }
   };
-
-  const handleForgot = async (e: React.FormEvent) => {
+  const handleForgot = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     if (!isValidEmail(email)) return setError('Invalid email');
@@ -127,8 +128,7 @@ export default function AuthModal({ isOpen, onClose, themeColor }: AuthModalProp
       setLoading(false);
     }
   };
-
-  return (
+  return (
     <div
       className="fixed inset-0 z-[70] pointer-events-auto flex items-center justify-center p-4 bg-black/50"
       onClick={onClose}
@@ -150,8 +150,7 @@ export default function AuthModal({ isOpen, onClose, themeColor }: AuthModalProp
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-
-  	    <div className="p-6">
+    	    <div className="p-6">
           <div className="flex justify-center mb-6">
             <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -159,8 +158,7 @@ export default function AuthModal({ isOpen, onClose, themeColor }: AuthModalProp
               </svg>
             </div>
           </div>
-
-          <div className="flex justify-center gap-4 mb-6 border-b border-white/20">
+          <div className="flex justify-center gap-4 mb-6 border-b border-white/20">
             <button
               className={`pb-2 text-sm font-medium transition-colors ${tab === 'login' ? 'text-white border-b-2 border-white' : 'text-white/60 hover:text-white'}`}
               onClick={() => setTab('login')}
@@ -180,14 +178,12 @@ export default function AuthModal({ isOpen, onClose, themeColor }: AuthModalProp
               Forgot?
             </button>
           </div>
-
-          {error && (
+          {error && (
             <div className="mb-4 p-2 text-sm text-red-300 bg-red-500/10 border border-red-500/20 rounded">
               {error}
             </div>
           )}
-
-          <form onSubmit={tab === 'login' ? handleLogin : tab === 'register' ? handleRegister : handleForgot}>
+          <form onSubmit={tab === 'login' ? handleLogin : tab === 'register' ? handleRegister : handleForgot}>
             <div className="mb-4">
               <label className="block text-xs uppercase tracking-wider text-white/60 mb-1">Email</label>
               <input
@@ -230,8 +226,7 @@ export default function AuthModal({ isOpen, onClose, themeColor }: AuthModalProp
               {loading ? 'Please wait...' : tab === 'login' ? 'Sign In' : tab === 'register' ? 'Create Account' : 'Send Reset Link'}
             </button>
           </form>
-
-          <p className="mt-4 text-center text-xs text-white/40">
+          <p className="mt-4 text-center text-xs text-white/40">
             {tab === 'login' ? "Don't have an account? " : tab === 'register' ? "Already have an account? " : "Remembered your password? "}
             <button
               onClick={() => setTab(tab === 'login' ? 'register' : tab === 'register' ? 'login' : 'login')}

@@ -2,8 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { RhineLogo } from './GFX';
 import SideMenu from './SideMenu';
-import AuthButton from './AuthButton';
-import { useAuthModal } from './AuthModalProvider';
+import AuthButton from '../auth/AuthButton';
+import { useAuthModal } from '../auth/AuthModalProvider';
 
 type HeaderProps = {
   themeColor?: string;
