@@ -105,39 +105,38 @@ export default function App() {
       </div>
 
       <Layout themeColor={themeColor} showAuthButtons={true} onLogoClick={() => scrollTo('hero')}>
-  {/* HERO SECTION */}
-  <main id="hero" className="relative z-10 flex flex-col items-center justify-center h-screen px-6 text-center">
-    <h2 className="text-6xl md:text-9xl font-black text-white uppercase tracking-tighter mb-6">
-      
-      Future <span style={{ color: themeColor }}>Defined</span>
-    </h2>
-    <p className="text-white/60 text-lg md:text-xl font-light tracking-widest uppercase mb-12">
-      Next-generation digital experiences built in only for you
-    </p>
-    <div className="flex flex-wrap justify-center gap-10">
-      <SnakeButton text="Start Project" color={themeColor} onClick={() => authModal.open('login')} />
-      <SnakeButton text="View Work" color="white" onClick={() => scrollTo('services')} />
-    </div>
-  </main>
+        {/* HERO SECTION */}
+        <main id="hero" className="relative z-10 flex flex-col items-center justify-center h-screen px-6 text-center">
+          <h2 className="text-6xl md:text-9xl font-black text-white uppercase tracking-tighter mb-6">
+            Future <span style={{ color: themeColor }}>Defined</span>
+          </h2>
+          <p className="text-white/60 text-lg md:text-xl font-light tracking-widest uppercase mb-12">
+            Next-generation digital experiences built in only for you
+          </p>
+          <div className="flex flex-wrap justify-center gap-10">
+            <SnakeButton text="Start Project" color={themeColor} onClick={() => authModal.open('login')} />
+            <SnakeButton text="View Work" color="white" onClick={() => scrollTo('services')} />
+          </div>
+        </main>
 
-
-        {/* SERVICES SECTION */}
+        {/* SERVICES SECTION – glass cards */}
         <section id="services" className="relative z-10 py-40 px-10">
           <div className="max-w-6xl mx-auto">
             <h3 className="text-[10px] uppercase tracking-[0.8em] mb-4" style={{ color: themeColor }}>Capabilities</h3>
             <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mb-20">Expertise</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-1px bg-white/10 border border-white/10">
-              {[{title:"WebGPU Apps"}, {title:"Digital Strategy"}, {title:"UI Architecture"}].map((s, i) => (
-                <div key={i} className="bg-black/40 p-12 hover:bg-black/60 transition-all group">
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {["WebGPU Apps", "Digital Strategy", "UI Architecture"].map((title, i) => (
+                <div key={i} className="bg-black/80 backdrop-blur-xl border-l border-white/20 rounded-r-2xl p-8 hover:bg-black/90 transition-all group">
                   <div className="w-8 h-[1px] mb-8 group-hover:w-full transition-all" style={{ backgroundColor: themeColor }}></div>
-                  <h4 className="text-xl font-bold text-white uppercase mb-4 tracking-widest">{s.title}</h4>
+                  <h4 className="text-xl font-bold text-white uppercase mb-4 tracking-widest">{title}</h4>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* TECHNOLOGY SECTION */}
+        {/* TECHNOLOGY SECTION – right panel now glassy */}
         <section id="technology" className="relative z-10 py-40 px-10 bg-white/[0.02]">
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-20">
             <div className="md:w-1/2 text-left">
@@ -146,27 +145,33 @@ export default function App() {
                 We leverage raw hardware acceleration to deliver visuals previously impossible on the web.
               </p>
             </div>
-            <div className="md:w-1/2 border border-white/10 p-1 bg-black/20">
+            {/* Glass container for the right panel (robot + system log) */}
+            <div className="md:w-1/2 bg-black/80 backdrop-blur-xl border-l border-white/20 rounded-r-2xl shadow-2xl p-1">
               <div className="border border-white/5 p-10 text-left font-mono text-[10px] text-white/30 leading-relaxed">
                 <span className="text-white/60 block mb-2">Rhine_System_Init...</span>
                 {`> Initializing WebGPU Context... DONE`} <br/>
                 {`> Loading Custom Shaders... DONE`} <br/>
-                 {/* Robot above heading */}
-                  <div className="w-48 h-48 md:w-64 md:h-64 mx-auto mb-6">
-                   <SplineRobot />
-                   </div>
+                <div className="w-48 h-48 md:w-64 md:h-64 mx-auto mb-6">
+                  <SplineRobot />
+                </div>
                 <span style={{ color: themeColor }} className="block mt-4 animate-pulse">_SYSTEM READY</span>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ABOUT SECTION */}
-        <section id="about" className="relative z-10 py-40 px-10 text-center">
-          <h2 className="text-4xl font-black text-white uppercase tracking-tighter mb-12">Behind <span style={{ color: themeColor }}>Rhine</span></h2>
-          <p className="max-w-3xl mx-auto text-white/70 text-xl leading-relaxed font-light uppercase tracking-widest">
-            Founded by htr, Rhine Solution was built on a single premise: The web should be as powerful as your hardware.
-          </p>
+        {/* ABOUT SECTION – glass container around heading + paragraph */}
+        <section id="about" className="relative z-10 py-40 px-10">
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-black/80 backdrop-blur-xl border-l border-white/20 rounded-r-2xl p-10 text-center shadow-2xl">
+              <h2 className="text-4xl font-black text-white uppercase tracking-tighter mb-8">
+                Behind <span style={{ color: themeColor }}>Rhine</span>
+              </h2>
+              <p className="text-white/70 text-xl leading-relaxed font-light uppercase tracking-widest">
+                Founded by htr, Rhine Solution was built on a single premise: The web should be as powerful as your hardware.
+              </p>
+            </div>
+          </div>
         </section>
 
         {/* CONTACT SECTION */}
@@ -179,8 +184,8 @@ export default function App() {
 
         {/* FIXED SIDE SCROLL INDICATOR */}
         <div className="side-indicator group cursor-pointer hidden lg:flex" onClick={() => scrollTo('services')}>
-           <span className="text-[8px] uppercase tracking-[0.6em] text-white/20 group-hover:text-white transition-colors duration-500 vertical-text font-black">Scroll to explore</span>
-           <div className="w-[1px] h-12 group-hover:h-24 transition-all duration-700 ease-in-out" style={{ backgroundColor: themeColor, boxShadow: `0 0 10px ${themeColor}` }}></div>
+          <span className="text-[8px] uppercase tracking-[0.6em] text-white/20 group-hover:text-white transition-colors duration-500 vertical-text font-black">Scroll to explore</span>
+          <div className="w-[1px] h-12 group-hover:h-24 transition-all duration-700 ease-in-out" style={{ backgroundColor: themeColor, boxShadow: `0 0 10px ${themeColor}` }}></div>
         </div>
       </Layout>
     </div>
