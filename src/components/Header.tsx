@@ -96,12 +96,12 @@ export default function Header({
   const openMobileMenu = () => setMobileMenuOpen(true);
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
-  const openAuthFromMobile = (tab?: 'login' | 'register') => {
+  const openAuthFromMobile = () => {
     if (mobileMenuOpen) {
       closeMobileMenu();
-      authModal.open(tab);
+      authModal.open();
     } else {
-      authModal.open(tab);
+      authModal.open();
     }
   };
 
@@ -273,8 +273,8 @@ export default function Header({
           open={mobileMenuOpen}
           onClose={closeMobileMenu}
           themeColor={themeColor}
-          onLogin={() => openAuthFromMobile('login')}
-          onRegister={() => openAuthFromMobile('register')}
+          onLogin={openAuthFromMobile}
+          onRegister={openAuthFromMobile}
           anchor="right"
           onHoverEnter={() => {}}
           onHoverLeave={() => {}}

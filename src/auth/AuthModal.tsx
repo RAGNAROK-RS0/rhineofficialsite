@@ -8,11 +8,10 @@ interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   themeColor?: string;
-  initialTab?: Tab;
 }
 
-export default function AuthModal({ isOpen, onClose, themeColor, initialTab = 'login' }: AuthModalProps) {
-  const [tab, setTab] = useState<Tab>(initialTab);
+export default function AuthModal({ isOpen, onClose, themeColor }: AuthModalProps) {
+  const [tab, setTab] = useState<Tab>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -79,8 +78,7 @@ export default function AuthModal({ isOpen, onClose, themeColor, initialTab = 'l
 
   const isValidEmail = (e: string) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e);
   const isStrongPassword = (p: string) => p.length >= 8;
-
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     if (!isValidEmail(email)) return setError('Invalid email');
@@ -157,8 +155,7 @@ export default function AuthModal({ isOpen, onClose, themeColor, initialTab = 'l
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-
-        <div className="p-6">
+    	    <div className="p-6">
           <div className="flex justify-center mb-6">
           </div>
 
@@ -279,7 +276,7 @@ export default function AuthModal({ isOpen, onClose, themeColor, initialTab = 'l
               }
               className="text-white/80 hover:text-white transition-colors"
             >
-              {tab === 'login' ? 'Register' : tab === 'register' ? 'Login' : 'Login'}
+              {tab === 'login' ? 'Sign up' : tab === 'register' ? 'Sign in' : 'Sign in'}
             </button>
           </p>
         </div>
