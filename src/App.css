@@ -2,11 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@keyframes snake-rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
 @keyframes status-pulse {
   0% { opacity: 0.4; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.2); }
@@ -52,24 +47,6 @@ header, main, section, footer, button, .snake-btn {
   overflow: hidden;
   background: transparent;
   transition: all 0.5s ease;
-}
-
-.snake-line {
-  position: absolute;
-  width: 200%;
-  height: 200%;
-  background: conic-gradient(transparent, transparent, transparent, var(--theme-color));
-  animation: snake-rotate 3s linear infinite;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.snake-btn:hover .snake-line {
-  opacity: 1;
-}
-
-.snake-btn:hover {
-  box-shadow: 0 0 30px var(--theme-color);
 }
 
 .btn-inner {
