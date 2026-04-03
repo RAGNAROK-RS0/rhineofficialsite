@@ -22,10 +22,6 @@ export default function AuthModal({ isOpen, onClose, themeColor }: AuthModalProp
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isOpen) setTab(initialTab);
-  }, [isOpen, initialTab]);
-
-  useEffect(() => {
     if (isOpen) {
       previouslyFocusedElement.current = document.activeElement as HTMLElement;
       setTimeout(() => {
@@ -78,7 +74,8 @@ export default function AuthModal({ isOpen, onClose, themeColor }: AuthModalProp
 
   const isValidEmail = (e: string) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e);
   const isStrongPassword = (p: string) => p.length >= 8;
-  const handleLogin = async (e: React.FormEvent) => {
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     if (!isValidEmail(email)) return setError('Invalid email');
@@ -155,36 +152,24 @@ export default function AuthModal({ isOpen, onClose, themeColor }: AuthModalProp
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-    	    <div className="p-6">
+
+    	    <div className="p-6">
           <div className="flex justify-center mb-6">
           </div>
-
-          <div className="flex justify-center gap-4 mb-6 border-b border-white/10">
+          <div className="flex justify-center gap-4 mb-6 border-b border-white/20">
             <button
-              className={`pb-2 text-sm font-medium transition-colors ${tab === 'login'
-                  ? 'text-white border-b-2 border-white'
-                  : 'text-white/60 hover:text-white'
-                }`}
-              onClick={() => setTab('login')}
-            >
+              className={`pb-2 text-sm font-medium transition-colors ${tab === 'login' ? 'text-white border-b-2 border-white' : 'text-white/60 hover:text-white'}`}
+              onClick={() => setTab('login')}>
               Login
             </button>
             <button
-              className={`pb-2 text-sm font-medium transition-colors ${tab === 'register'
-                  ? 'text-white border-b-2 border-white'
-                  : 'text-white/60 hover:text-white'
-                }`}
-              onClick={() => setTab('register')}
-            >
+              className={`pb-2 text-sm font-medium transition-colors ${tab === 'register' ? 'text-white border-b-2 border-white' : 'text-white/60 hover:text-white'}`}
+              onClick={() => setTab('register')}>
               Register
             </button>
             <button
-              className={`pb-2 text-sm font-medium transition-colors ${tab === 'forgot'
-                  ? 'text-white border-b-2 border-white'
-                  : 'text-white/60 hover:text-white'
-                }`}
-              onClick={() => setTab('forgot')}
-            >
+              className={`pb-2 text-sm font-medium transition-colors ${tab === 'forgot' ? 'text-white border-b-2 border-white' : 'text-white/60 hover:text-white'}`}
+              onClick={() => setTab('forgot')}>
               Forgot Password
             </button>
           </div>
@@ -194,16 +179,7 @@ export default function AuthModal({ isOpen, onClose, themeColor }: AuthModalProp
               {error}
             </div>
           )}
-
-          <form
-            onSubmit={
-              tab === 'login'
-                ? handleLogin
-                : tab === 'register'
-                  ? handleRegister
-                  : handleForgot
-            }
-          >
+          <form onSubmit={tab === 'login' ? handleLogin : tab === 'register' ? handleRegister : handleForgot}>
             <div className="mb-4">
               <label className="block text-xs uppercase tracking-wider text-white/50 mb-1">
                 Email
@@ -252,13 +228,7 @@ export default function AuthModal({ isOpen, onClose, themeColor }: AuthModalProp
               disabled={loading}
               className="w-full py-2 bg-white/20 hover:bg-white/30 rounded-lg text-white font-medium transition-colors disabled:opacity-50"
             >
-              {loading
-                ? 'Please wait...'
-                : tab === 'login'
-                  ? 'Login'
-                  : tab === 'register'
-                    ? 'Create Account'
-                    : 'Send Reset Link'}
+              {loading ? 'Please wait...' : tab === 'login' ? 'Login' : tab === 'register' ? 'Create Account' : 'Send Reset Link'}
             </button>
           </form>
 
