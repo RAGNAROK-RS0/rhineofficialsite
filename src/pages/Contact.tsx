@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import { Turnstile } from '@marsidev/react-turnstile';
-
-// Vite env: VITE_TURNSTILE_SITEKEY should be set in .env
-const TURNSTILE_SITEKEY = import.meta.env.VITE_TURNSTILE_SITEKEY || '';
 import { Helmet } from 'react-helmet-async';
+
+// ✅ Fixed: matches Cloudflare Pages env var name (VITE_TURNSTILE_SITE_KEY)
+const TURNSTILE_SITEKEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '';
 
 type FormState = {
   name: string;
