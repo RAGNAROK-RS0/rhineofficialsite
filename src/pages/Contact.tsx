@@ -3,7 +3,6 @@ import Layout from '../components/Layout';
 import { Turnstile } from '@marsidev/react-turnstile';
 import { Helmet } from 'react-helmet-async';
 
-// ✅ Fixed: matches Cloudflare Pages env var name (VITE_TURNSTILE_SITE_KEY)
 const TURNSTILE_SITEKEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || '';
 
 type FormState = {

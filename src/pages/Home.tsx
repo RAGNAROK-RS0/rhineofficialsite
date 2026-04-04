@@ -15,7 +15,7 @@ export default function App() {
 
   useEffect(() => {
     setHasWebGPU(WebGPU.isAvailable());
-    
+
     const syncHUD = () => {
       setDisplayZoom(Root.zoomPercent || 0);
       requestAnimationFrame(syncHUD);
@@ -82,7 +82,7 @@ export default function App() {
 
   return (
     <div id="app" className="relative w-full min-h-screen overflow-y-auto font-rubik selection:bg-white/20">
-      
+
       {/* TECHNICAL HUD */}
       <div className="fixed top-1/2 left-10 -translate-y-1/2 z-50 font-mono text-[10px] text-white/20 space-y-6 hidden xl:block"
         style={{ textShadow: `0 0 1px ${themeColor}` }}>
@@ -116,8 +116,18 @@ export default function App() {
             Next-generation digital experiences built in only for you
           </p>
           <div className="flex flex-wrap justify-center gap-10">
-            <SnakeButton text="Start Project" color={themeColor} onClick={() => authModal.open('login')} />
-            <SnakeButton text="View Work" color="white" onClick={() => scrollTo('services')} />
+            <button
+              style={{ color: themeColor, borderColor: themeColor, borderWidth: "1px", padding: "1.5em 1.5em", textTransform: "uppercase", fontSize: "15px", fontWeight: "bold", letterSpacing: "0.2em" }}
+              onClick={() => authModal.open('login')}
+            >
+              Start Project
+            </button>
+            <button
+              style={{ color: "white", borderColor: "white", borderWidth: "1px", padding: "1.5em 1.5em", textTransform: "uppercase", fontSize: "15px", fontWeight: "bold", letterSpacing: "0.2em" }}
+              onClick={() => scrollTo('services')}
+            >
+              View Work
+            </button>
           </div>
         </main>
 
@@ -126,7 +136,7 @@ export default function App() {
           <div className="max-w-6xl mx-auto">
             <h3 className="text-[10px] uppercase tracking-[0.8em] mb-4" style={{ color: themeColor }}>Capabilities</h3>
             <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mb-20">Expertise</h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {["WebGPU Apps", "Digital Strategy", "UI Architecture"].map((title, i) => (
                 <div key={i} className="bg-black/80 backdrop-blur-xl border-l border-white/20 rounded-r-2xl p-8 hover:bg-black/90 transition-all group">
@@ -151,8 +161,8 @@ export default function App() {
             <div className="md:w-1/2 bg-black/80 backdrop-blur-xl border-l border-white/20 rounded-r-2xl shadow-2xl p-1">
               <div className="border border-white/5 p-10 text-left font-mono text-[10px] text-white/30 leading-relaxed">
                 <span className="text-white/60 block mb-2">Rhine_System_Init...</span>
-                {`> Initializing WebGPU Context... DONE`} <br/>
-                {`> Loading Custom Shaders... DONE`} <br/>
+                {`> Initializing WebGPU Context... DONE`} <br />
+                {`> Loading Custom Shaders... DONE`} <br />
                 <div className="w-48 h-48 md:w-64 md:h-64 mx-auto mb-6">
                   //plineRoboot import//
                 </div>
