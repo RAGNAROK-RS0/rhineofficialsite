@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { ACESFilmicToneMapping, Clock, PerspectiveCamera, Scene, Vector2, Vector3 } from "three/webgpu";
+import { ACESFilmicToneMapping, Clock, PerspectiveCamera, Scene, Vector2, Vector3, SRGBColorSpace } from "three/webgpu";
 import { IAnimatedElement } from "./interfaces/IAnimatedElement";
 import { pass, PostProcessing, WebGPURenderer } from "three/webgpu";
 import { OrbitControls, TrackballControls } from "three/examples/jsm/Addons.js";
@@ -40,12 +40,39 @@ export class Root {
     clock: Clock = new Clock(false);
     post?: PostProcessing;
 
+    // Performance/adaptive rendering fields
+    resolutionScale: number = 0.75; // Start at 75% resolution to improve initial perf
+    targetFps: number = 60;
+    lastRenderTime: number | null = null;
+    frameTimes: number[] = [];
+    maxFrameSamples: number = 60;
+
     initRenderer() {
         if (WebGPU.isAvailable() === false) throw new Error('No WebGPU support');
-        this.renderer = new WebGPURenderer({ canvas: this.canvas, antialias: true });
+        this.renderer = new WebGPURenderer({ canvas: this.canvas, antialias: false, alpha: true }); // Antialiasing disabled for performance, alpha true for transparency
+        this.renderer.outputColorSpace = SRGBColorSpace; // Ensure correct color space for display
+        // Keep pixel ratio conservative to avoid high-DPI cost
         this.renderer.setPixelRatio(1);
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        // Use initial resolution scale
+        this.setRendererSize(window.innerWidth, window.innerHeight, this.resolutionScale);
         window.addEventListener('resize', this.onResize.bind(this));
+
+        // Visibility change: pause rendering when tab hidden to save CPU/GPU
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                try {
+                    if (this.renderer && typeof (this.renderer as any).setAnimationLoop === 'function') {
+                        (this.renderer as any).setAnimationLoop(null);
+                    }
+                } catch (e) {
+                    // ignore
+                }
+            } else {
+                // resume
+                this.lastRenderTime = null;
+                this.renderer!.setAnimationLoop(this.animate.bind(this));
+            }
+        });
     }
 
     camera: PerspectiveCamera = new PerspectiveCamera(70, 1, .01, 1000);
@@ -85,19 +112,98 @@ export class Root {
     onResize() {
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
-        this.renderer!.setSize(window.innerWidth, window.innerHeight);
+        this.setRendererSize(window.innerWidth, window.innerHeight, this.resolutionScale);
+    }
+
+    // Helper to set renderer size scaled by resolutionScale
+    setRendererSize(width: number, height: number, scale: number) {
+        if (!this.renderer) return;
+        const w = Math.max(1, Math.floor(width * scale));
+        const h = Math.max(1, Math.floor(height * scale));
+        try {
+            this.renderer.setSize(w, h);
+        } catch (e) {
+            // fallback to raw size
+            this.renderer.setSize(width, height);
+        }
+    }
+
+    // Adaptive resolution logic: adjust scale / target fps based on recent frame times
+    adjustAdaptiveSettings() {
+        if (this.frameTimes.length === 0) return;
+        const sum = this.frameTimes.reduce((a, b) => a + b, 0);
+        const avgMs = sum / this.frameTimes.length;
+
+        // Adjust target FPS based on average frame time
+        if (avgMs > 45) {
+            this.targetFps = 24;
+        } else if (avgMs > 28) {
+            this.targetFps = 30;
+        } else {
+            this.targetFps = 60;
+        }
+
+        // Adaptive resolution scaling (smooth adjustments)
+        let desiredScale = 1;
+        if (avgMs > 40) desiredScale = 0.5;
+        else if (avgMs > 28) desiredScale = 0.75;
+        else desiredScale = 1;
+
+        // Smooth transition towards desired scale
+        const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+        this.resolutionScale = lerp(this.resolutionScale, desiredScale, 0.25);
+        // Enforce bounds
+        this.resolutionScale = Math.min(1, Math.max(0.5, this.resolutionScale));
+
+        // Apply renderer size change if significant
+        if (this.renderer) {
+            const targetWidth = Math.floor(window.innerWidth * this.resolutionScale);
+            const targetHeight = Math.floor(window.innerHeight * this.resolutionScale);
+            const currentSize = (this.renderer as any).getSize(new Vector2());
+            if (Math.abs(currentSize.x - targetWidth) > 16 || Math.abs(currentSize.y - targetHeight) > 16) {
+                this.setRendererSize(window.innerWidth, window.innerHeight, this.resolutionScale);
+            }
+        }
     }
 
     animate() {
         if (!this.capturing) {
+            const now = performance.now();
+            if (!this.lastRenderTime) this.lastRenderTime = now;
+
+            const elapsedSinceLastRender = now - this.lastRenderTime;
+            const targetMs = 1000 / this.targetFps;
+
+            // Skip frame if we're rendering faster than target fps
+            if (elapsedSinceLastRender < targetMs * 0.9) {
+                return;
+            }
+
+            // Compute dt using clock to keep animations consistent
             const dt: number = this.clock.getDelta();
             const elapsed: number = this.clock.getElapsedTime();
 
-            // Removed scene.rotation.x = this.scrollRotation;
+            // Run updates
+            try {
+                this.controls!.update(dt);
+                this.animatedElements.forEach((element) => element.update(dt, elapsed));
+                this.postProcessing!.render();
+            } catch (err) {
+                // If rendering fails, surface error to console and bail this frame
+                console.warn('Render frame failed, skipping:', err);
+                this.lastRenderTime = now;
+                return;
+            }
 
-            this.controls!.update(dt);
-            this.animatedElements.forEach((element) => element.update(dt, elapsed));
-            this.postProcessing!.render();
+            // track performance
+            const frameMs = performance.now() - now;
+            this.frameTimes.push(frameMs);
+            if (this.frameTimes.length > this.maxFrameSamples) this.frameTimes.shift();
+
+            // Periodically adjust adaptive settings
+            if (this.frameTimes.length === this.maxFrameSamples) {
+                this.adjustAdaptiveSettings();
+            }
 
             // UPDATE ZOOM PERCENTAGE FOR HUD
             if (this.controls) {
@@ -105,6 +211,8 @@ export class Root {
                 const currentZoom = this.camera.position.z - this.controls.minDistance;
                 Root.zoomPercent = Math.max(0, Math.min(100, Math.round((1 - (currentZoom / zoomRange)) * 100)));
             }
+
+            this.lastRenderTime = now;
         }
     }
 
