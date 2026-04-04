@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
+import ScrollToTop from './ScrollToTop';
 
 interface LayoutProps {
   children: ReactNode;
@@ -34,6 +35,8 @@ export default function Layout({
         disableSideMenu={disableSideMenu}
         onLogoClick={handleLogoClick}
       />
+
+      <ScrollToTop />
 
       <main className="pt-[72px] min-h-screen flex-1">
         {children}

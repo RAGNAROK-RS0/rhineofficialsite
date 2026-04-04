@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { RhineLogo } from './GFX';
 import SideMenu from './SideMenu';
 import AuthButton from '../auth/AuthButton';
@@ -53,6 +53,8 @@ export default function Header({
   const megaMenuRef = useRef<HTMLDivElement>(null);
   const pillRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const pathname = location.pathname;
   const authModal = useAuthModal();
 
   useEffect(() => {
@@ -144,21 +146,22 @@ export default function Header({
           <div className="flex items-center gap-1 px-3 sm:px-4 py-2 sm:py-2.5">
             {/* Desktop Navigation - Inside Pill */}
             <div className="flex items-center gap-1">
-              {(Object.keys(megaMenuCategories) as Array<keyof typeof megaMenuCategories>).map((name) => (
-                <button
-                  key={name}
-                  onClick={() => openCategoryMenu(name)}
-                  className={`
-                    nav-trigger px-3 py-1.5 text-sm font-medium rounded-full transition-all duration-200
-                    ${activeCategory === name && megaMenuOpen
-                      ? 'bg-white/20 text-white'
-                      : 'text-white/70 hover:text-white hover:bg-white/10'
-                    }
-                  `}
-                >
-                  {name}
-                </button>
-              ))}
+              {(Object.keys(megaMenuCategories) as Array<keyof typeof megaMenuCategories>).map((name) => {
+                const categoryPath = `/${String(name).toLowerCase()}`;
+                const isActivePath = pathname === categoryPath || pathname.startsWith(`${categoryPath}/`);
+                const isOpen = activeCategory === name && megaMenuOpen;
+                const activeClass = isActivePath || isOpen ? 'bg-white/20 text-white' : 'text-white/70 hover:text-white hover:bg-white/10';
+
+                return (
+                  <button
+                    key={name}
+                    onClick={() => openCategoryMenu(name)}
+                    className={`nav-trigger px-3 py-1.5 text-sm font-medium rounded-full transition-all duration-200 ${activeClass}`}
+                  >
+                    {name}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
