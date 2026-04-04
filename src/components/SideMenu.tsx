@@ -36,11 +36,27 @@ export default function SideMenu({
 
   const navigate = useNavigate();
 
+  // --- NEW: smooth scroll helper for same-page sections ---
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      // fallback: if section doesn't exist, scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   // Dynamic Island glass styles
   const mobileGlass = 'bg-black/80 backdrop-blur-xl border-l border-white/20';
   const topGlass = 'bg-black/80 backdrop-blur-xl border-b border-white/20';
 
   const nav = [
+    {
+      title: 'Rhine',
+      items: ['Rhine', 'Expertise', 'The Engine', 'Behind Rhine', "Let's Create"],
+      note: 'Company and legal links.',
+    },
     {
       title: 'Services',
       items: ['Web Development', 'Cloud Infrastructure', 'IT Consulting', 'Digital Transformation'],
@@ -75,6 +91,28 @@ export default function SideMenu({
 
   const handleItemClick = (category: string, item: string) => {
     onClose();
+
+    // --- MODIFIED: Rhine category → scroll to sections on the main page ---
+    if (category === 'Rhine') {
+      // Map Rhine menu items to section IDs
+      const rhineSectionMap: Record<string, string> = {
+        'Rhine': 'hero',           // you need a <section id="hero"> at the top, or fallback to top
+        'Expertise': 'services',
+        'The Engine': 'technology',
+        'Behind Rhine': 'about',
+        "Let's Create": 'contact'
+      };
+      const sectionId = rhineSectionMap[item];
+      if (sectionId) {
+        scrollToSection(sectionId);
+      } else {
+        // fallback: scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      return; // done, no navigation
+    }
+
+    // --- ORIGINAL LOGIC for all other categories ---
     const slug = item.toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace('webgpu-3d-rendering', 'webgpu-3d')

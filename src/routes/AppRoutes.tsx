@@ -34,6 +34,8 @@ const CaseStudies = lazy(() => import('../pages/Resources/CaseStudies'));
 const Documentation = lazy(() => import('../pages/Resources/Documentation'));
 const BlogInsights = lazy(() => import('../pages/Resources/BlogInsights'));
 
+const Contact = lazy(() => import('../pages/Contact'));
+
 const AdminPage = lazy(() => import('../pages/Admin'));
 const DashboardPage = lazy(() => import('../pages/Dashboard'));
 const Privacy = lazy(() => import('../pages/Privacy'));
@@ -75,6 +77,9 @@ export default function AppRoutes() {
         <Route path="/resources/documentation" element={<Documentation />} />
         <Route path="/resources/blog-insights" element={<BlogInsights />} />
         <Route path="/resources/support-community" element={<ForumRedirect />} />
+
+        {/* Contact */}
+        <Route path="/contact" element={<Contact />} />
 
         {/* Existing admin/dashboard routes */}
         <Route path="/admin" element={<AdminPage />} />

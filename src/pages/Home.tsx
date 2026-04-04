@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../App.css';
 import WebGPU from 'three/examples/jsm/capabilities/WebGPU.js';
 import { RhineLogo, githubIcon, twitterIcon } from '../components/GFX';
@@ -37,6 +38,7 @@ export default function App() {
 
   const themeColor = `hsl(${hue}, 100%, 60%)`;
   const authModal = useAuthModal();
+  const navigate = useNavigate();
 
   const SnakeButton = ({ text, color, onClick }: { text: string; color: string; onClick?: () => void }) => {
     const handleClick = (e?: React.MouseEvent | React.KeyboardEvent) => {
@@ -178,7 +180,7 @@ export default function App() {
         <section id="contact" className="relative z-10 py-60 px-10 text-center">
           <h2 className="text-6xl md:text-8xl font-black text-white uppercase tracking-tighter mb-12">Let's <span style={{ color: themeColor }}>Create</span></h2>
           <div className="flex justify-center">
-            <SnakeButton text="Contact US" color={themeColor} />
+            <SnakeButton text="Contact US" color={themeColor} onClick={() => navigate('/contact')} />
           </div>
         </section>
 

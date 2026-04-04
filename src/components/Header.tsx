@@ -14,6 +14,12 @@ type HeaderProps = {
 };
 
 const megaMenuCategories = {
+  Rhine: [
+    "Expertise",
+    "The Engine",
+    "Behind Rhine",
+    "Let's Create"
+  ],
   Services: [
     "Web Development",
     "Cloud Infrastructure",
@@ -286,8 +292,8 @@ export default function Header({
           onLogin={() => openAuthFromMobile('login')}
           onRegister={() => openAuthFromMobile('register')}
           anchor="right"
-          onHoverEnter={() => {}}
-          onHoverLeave={() => {}}
+          onHoverEnter={() => { }}
+          onHoverLeave={() => { }}
         />
       )}
     </>
