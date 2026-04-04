@@ -663,49 +663,7 @@ export default function Dashboard(): JSX.Element {
                         <button onClick={() => fetchNotifications()} className="px-3 py-2 text-xs bg-white/10 rounded text-white hover:bg-white/20 transition-colors">Refresh notifications</button>
                       </div>
                     </div>
-
-                    <div className="requests-panel p-4 rounded-xl bg-black/80 backdrop-blur-xl border border-white/20 shadow-2xl">
-                      <h3 className="text-sm text-white/60">Team Requests</h3>
-                      <div className="mt-3 space-y-3 max-h-56 overflow-auto pr-2">
-                        {invitesLoading && <div className="text-sm text-white/60">Loading...</div>}
-                        {invitesError && <div className="text-sm text-red-400">{invitesError}</div>}
-                        {!invitesLoading && invites.length === 0 && <div className="text-sm text-white/60">No pending invites</div>}
-                        {invites.map((it: any) => (
-                          <div key={it.id} className="p-3 rounded-lg bg-white/5 border border-white/10 flex items-center justify-between">
-                            <div className="min-w-0">
-                              <div className="text-sm font-semibold text-white truncate max-w-[12rem]">Invite to team {sanitizeForDisplay(it.team_id)}</div>
-                              <div className="text-xs text-white/50">{formatDate(it.created_at)}</div>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <button onClick={async () => {
-                                // Accept invite: call RPC (to be implemented) or inline client-side (NOT recommended). We'll perform a validated client call to update invite safely.
-                                try {
-                                  const user = (await supabase.auth.getUser()).data?.user;
-                                  if (!user) throw new Error('Not authenticated');
-                                  // Call RPC accept_invite - implement on server. Optimistic UI: mark as accepted locally.
-                                  const { data: rpcData, error: rpcErr } = await supabase.rpc('accept_invite', { invite_id_in: it.id });
-                                  if (rpcErr) throw rpcErr;
-                                  setInvites((prev) => prev.filter((x) => x.id !== it.id));
-                                } catch (err: any) {
-                                  console.error('accept invite failed', err?.message || err);
-                                  alert('Failed to accept invite');
-                                }
-                              }} className="px-2 py-1 rounded bg-white/10 hover:bg-white/20">Accept</button>
-                              <button onClick={async () => {
-                                try {
-                                  const { error } = await supabase.from('team_invites').update({ status: 'declined' }).eq('id', it.id);
-                                  if (error) throw error;
-                                  setInvites((prev) => prev.filter((x) => x.id !== it.id));
-                                } catch (err: any) {
-                                  console.error('decline invite failed', err?.message || err);
-                                  alert('Failed to decline invite');
-                                }
-                              }} className="px-2 py-1 rounded bg-red-600/20 hover:bg-red-600/30">Decline</button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>                  </aside>
+                  </aside>
                 </div>
               </main>
 
@@ -730,6 +688,49 @@ export default function Dashboard(): JSX.Element {
                   <div className="mt-2 text-xs text-white/50 flex justify-between">
                     <span>{formatStorageUsed()}</span>
                     <span>of {formatStorageLimit()}</span>
+                  </div>
+                </div>
+
+                <div className="requests-panel mt-4 p-4 rounded-xl bg-black/80 backdrop-blur-xl border border-white/20 shadow-2xl">
+                  <h3 className="text-sm text-white/60">Team Requests</h3>
+                  <div className="mt-3 space-y-3 max-h-56 overflow-auto pr-2">
+                    {invitesLoading && <div className="text-sm text-white/60">Loading...</div>}
+                    {invitesError && <div className="text-sm text-red-400">{invitesError}</div>}
+                    {!invitesLoading && invites.length === 0 && <div className="text-sm text-white/60">No pending invites</div>}
+                    {invites.map((it: any) => (
+                      <div key={it.id} className="p-3 rounded-lg bg-white/5 border border-white/10 flex items-center justify-between">
+                        <div className="min-w-0">
+                          <div className="text-sm font-semibold text-white truncate max-w-[12rem]">Invite to team {sanitizeForDisplay(it.team_id)}</div>
+                          <div className="text-xs text-white/50">{formatDate(it.created_at)}</div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button onClick={async () => {
+                            // Accept invite: call RPC (to be implemented) or inline client-side (NOT recommended). We'll perform a validated client call to update invite safely.
+                            try {
+                              const user = (await supabase.auth.getUser()).data?.user;
+                              if (!user) throw new Error('Not authenticated');
+                              // Call RPC accept_invite - implement on server. Optimistic UI: mark as accepted locally.
+                              const { data: rpcData, error: rpcErr } = await supabase.rpc('accept_invite', { invite_id_in: it.id });
+                              if (rpcErr) throw rpcErr;
+                              setInvites((prev) => prev.filter((x) => x.id !== it.id));
+                            } catch (err: any) {
+                              console.error('accept invite failed', err?.message || err);
+                              alert('Failed to accept invite');
+                            }
+                          }} className="px-2 py-1 rounded bg-white/10 hover:bg-white/20">Accept</button>
+                          <button onClick={async () => {
+                            try {
+                              const { error } = await supabase.from('team_invites').update({ status: 'declined' }).eq('id', it.id);
+                              if (error) throw error;
+                              setInvites((prev) => prev.filter((x) => x.id !== it.id));
+                            } catch (err: any) {
+                              console.error('decline invite failed', err?.message || err);
+                              alert('Failed to decline invite');
+                            }
+                          }} className="px-2 py-1 rounded bg-red-600/20 hover:bg-red-600/30">Decline</button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
