@@ -1,6 +1,14 @@
-import React, { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner';
+
+function ForumRedirect() {
+  useEffect(() => {
+    window.location.href = "https://rhinesolution.discourse.group/latest";
+  }, []);
+
+  return null;
+}
 
 const Home = lazy(() => import('../pages/Home'));
 const Services = lazy(() => import('../pages/Services/Services'));
@@ -25,7 +33,6 @@ const Resources = lazy(() => import('../pages/Resources/Resources'));
 const CaseStudies = lazy(() => import('../pages/Resources/CaseStudies'));
 const Documentation = lazy(() => import('../pages/Resources/Documentation'));
 const BlogInsights = lazy(() => import('../pages/Resources/BlogInsights'));
-const SupportCommunity = lazy(() => import('../pages/Resources/SupportCommunity'));
 
 const AdminPage = lazy(() => import('../pages/Admin'));
 const DashboardPage = lazy(() => import('../pages/Dashboard'));
@@ -67,7 +74,7 @@ export default function AppRoutes() {
         <Route path="/resources/case-studies" element={<CaseStudies />} />
         <Route path="/resources/documentation" element={<Documentation />} />
         <Route path="/resources/blog-insights" element={<BlogInsights />} />
-        <Route path="/resources/support-community" element={<SupportCommunity />} />
+        <Route path="/resources/support-community" element={<ForumRedirect />} />
 
         {/* Existing admin/dashboard routes */}
         <Route path="/admin" element={<AdminPage />} />
