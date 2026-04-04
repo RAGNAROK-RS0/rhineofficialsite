@@ -1,5 +1,6 @@
+// src/lib/Root.ts
 // @ts-nocheck
-import { ACESFilmicToneMapping, Clock, PerspectiveCamera, Scene, Vector2, Vector3, SRGBColorSpace } from "three/webgpu";
+import { ACESFilmicToneMapping, Clock, PerspectiveCamera, Scene, Vector2, Vector3, SRGBColorSpace } from "three/webgpu"; // SRGBColorSpace added
 import { IAnimatedElement } from "./interfaces/IAnimatedElement";
 import { pass, PostProcessing, WebGPURenderer } from "three/webgpu";
 import { OrbitControls, TrackballControls } from "three/examples/jsm/Addons.js";
@@ -9,8 +10,7 @@ import { LinkedParticles } from "./elements/LinkedParticles";
 export class Root {
     static instance: Root;
     animatedElements: IAnimatedElement[] = [];
-    
-    // NEW: Static variable for React to read the zoom level
+
     static zoomPercent: number = 0;
 
     static registerAnimatedElement(element: IAnimatedElement) {
@@ -41,24 +41,27 @@ export class Root {
     post?: PostProcessing;
 
     // Performance/adaptive rendering fields
-    resolutionScale: number = 0.75; // Start at 75% resolution to improve initial perf
+    resolutionScale: number = 0.75; // Initialized to 0.75 for better starting performance
     targetFps: number = 60;
     lastRenderTime: number | null = null;
     frameTimes: number[] = [];
     maxFrameSamples: number = 60;
 
-    initRenderer() {
-        if (WebGPU.isAvailable() === false) throw new Error('No WebGPU support');
-        this.renderer = new WebGPURenderer({ canvas: this.canvas, antialias: false, alpha: true }); // Antialiasing disabled for performance, alpha true for transparency
-        this.renderer.outputColorSpace = SRGBColorSpace; // Ensure correct color space for display
-        // Keep pixel ratio conservative to avoid high-DPI cost
-        this.renderer.setPixelRatio(1);
-        // Use initial resolution scale
-        this.setRendererSize(window.innerWidth, window.innerHeight, this.resolutionScale);
-        window.addEventListener('resize', this.onResize.bind(this));
+    // handlers stored so they can be removed on dispose
+    resizeHandler: (() => void) | null = null;
+    visibilityHandler: (() => void) | null = null;
 
-        // Visibility change: pause rendering when tab hidden to save CPU/GPU
-        document.addEventListener('visibilitychange', () => {
+    initRenderer() {
+        if (typeof WebGPU === 'undefined' || WebGPU.isAvailable() === false) throw new Error('No WebGPU support');
+        this.renderer = new WebGPURenderer({ canvas: this.canvas, antialias: false, alpha: true }); // antialias: false, alpha: true for potential performance and transparency
+        this.renderer.outputColorSpace = SRGBColorSpace; // Ensure correct color space for display
+        this.renderer.setPixelRatio(1);
+        this.setRendererSize(window.innerWidth, window.innerHeight, this.resolutionScale);
+
+        this.resizeHandler = this.onResize.bind(this);
+        window.addEventListener('resize', this.resizeHandler);
+
+        this.visibilityHandler = () => {
             if (document.hidden) {
                 try {
                     if (this.renderer && typeof (this.renderer as any).setAnimationLoop === 'function') {
@@ -68,11 +71,15 @@ export class Root {
                     // ignore
                 }
             } else {
-                // resume
                 this.lastRenderTime = null;
-                this.renderer!.setAnimationLoop(this.animate.bind(this));
+                try {
+                    this.renderer!.setAnimationLoop(this.animate.bind(this));
+                } catch (e) {
+                    // ignore
+                }
             }
-        });
+        };
+        document.addEventListener('visibilitychange', this.visibilityHandler);
     }
 
     camera: PerspectiveCamera = new PerspectiveCamera(70, 1, .01, 1000);
@@ -84,15 +91,12 @@ export class Root {
         this.camera.position.z = 5;
         this.camera.updateProjectionMatrix();
 
-        // Attach controls to canvas so they don't block UI touches
         this.controls = new OrbitControls(this.camera, this.canvas);
         
         this.controls.enableZoom = false; 
         this.controls.minDistance = 3;  
         this.controls.maxDistance = 30; 
         this.controls.target.set(0, 0, 0);
-
-        // No scroll rotation – we remove the event listener
     }
 
     postProcessing?: PostProcessing;
@@ -115,7 +119,6 @@ export class Root {
         this.setRendererSize(window.innerWidth, window.innerHeight, this.resolutionScale);
     }
 
-    // Helper to set renderer size scaled by resolutionScale
     setRendererSize(width: number, height: number, scale: number) {
         if (!this.renderer) return;
         const w = Math.max(1, Math.floor(width * scale));
@@ -123,18 +126,15 @@ export class Root {
         try {
             this.renderer.setSize(w, h);
         } catch (e) {
-            // fallback to raw size
             this.renderer.setSize(width, height);
         }
     }
 
-    // Adaptive resolution logic: adjust scale / target fps based on recent frame times
     adjustAdaptiveSettings() {
         if (this.frameTimes.length === 0) return;
         const sum = this.frameTimes.reduce((a, b) => a + b, 0);
         const avgMs = sum / this.frameTimes.length;
 
-        // Adjust target FPS based on average frame time
         if (avgMs > 45) {
             this.targetFps = 24;
         } else if (avgMs > 28) {
@@ -143,19 +143,15 @@ export class Root {
             this.targetFps = 60;
         }
 
-        // Adaptive resolution scaling (smooth adjustments)
         let desiredScale = 1;
         if (avgMs > 40) desiredScale = 0.5;
         else if (avgMs > 28) desiredScale = 0.75;
         else desiredScale = 1;
 
-        // Smooth transition towards desired scale
         const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
         this.resolutionScale = lerp(this.resolutionScale, desiredScale, 0.25);
-        // Enforce bounds
         this.resolutionScale = Math.min(1, Math.max(0.5, this.resolutionScale));
 
-        // Apply renderer size change if significant
         if (this.renderer) {
             const targetWidth = Math.floor(window.innerWidth * this.resolutionScale);
             const targetHeight = Math.floor(window.innerHeight * this.resolutionScale);
@@ -163,6 +159,28 @@ export class Root {
             if (Math.abs(currentSize.x - targetWidth) > 16 || Math.abs(currentSize.y - targetHeight) > 16) {
                 this.setRendererSize(window.innerWidth, window.innerHeight, this.resolutionScale);
             }
+        }
+
+        // If the scene is heavy, progressively reduce visual quality settings on the fx module
+        try {
+            if (this.fx) {
+                if (this.resolutionScale < 0.75) {
+                    // disable expensive post effects
+                    if (typeof this.fx.uUseRGBShift !== 'undefined') this.fx.uUseRGBShift.value = 0;
+                    if (typeof this.fx.uUseBlur !== 'undefined') this.fx.uUseBlur.value = 0;
+                    if (typeof this.fx.uUseAnamorphic !== 'undefined') this.fx.uUseAnamorphic.value = 0;
+                    // reduce spawn rate and particle size
+                    if (typeof this.fx.uSpawnCursorNb !== 'undefined') this.fx.uSpawnCursorNb.value = Math.max(1, Math.floor(this.fx.uSpawnCursorNb.value * this.resolutionScale));
+                    if (typeof this.fx.uParticleSize !== 'undefined') this.fx.uParticleSize.value = Math.max(0.2, this.fx.uParticleSize.value * this.resolutionScale);
+                } else {
+                    // try to restore defaults conservatively
+                    if (typeof this.fx.uUseRGBShift !== 'undefined') this.fx.uUseRGBShift.value = 1;
+                    if (typeof this.fx.uUseBlur !== 'undefined') this.fx.uUseBlur.value = 1;
+                    if (typeof this.fx.uUseAnamorphic !== 'undefined') this.fx.uUseAnamorphic.value = 0;
+                }
+            }
+        } catch (e) {
+            // non-critical
         }
     }
 
@@ -174,38 +192,31 @@ export class Root {
             const elapsedSinceLastRender = now - this.lastRenderTime;
             const targetMs = 1000 / this.targetFps;
 
-            // Skip frame if we're rendering faster than target fps
             if (elapsedSinceLastRender < targetMs * 0.9) {
                 return;
             }
 
-            // Compute dt using clock to keep animations consistent
             const dt: number = this.clock.getDelta();
             const elapsed: number = this.clock.getElapsedTime();
 
-            // Run updates
             try {
                 this.controls!.update(dt);
                 this.animatedElements.forEach((element) => element.update(dt, elapsed));
                 this.postProcessing!.render();
             } catch (err) {
-                // If rendering fails, surface error to console and bail this frame
                 console.warn('Render frame failed, skipping:', err);
                 this.lastRenderTime = now;
                 return;
             }
 
-            // track performance
             const frameMs = performance.now() - now;
             this.frameTimes.push(frameMs);
             if (this.frameTimes.length > this.maxFrameSamples) this.frameTimes.shift();
 
-            // Periodically adjust adaptive settings
             if (this.frameTimes.length === this.maxFrameSamples) {
                 this.adjustAdaptiveSettings();
             }
 
-            // UPDATE ZOOM PERCENTAGE FOR HUD
             if (this.controls) {
                 const zoomRange = this.controls.maxDistance - this.controls.minDistance;
                 const currentZoom = this.camera.position.z - this.controls.minDistance;
@@ -231,5 +242,37 @@ export class Root {
         link.href = imgData;
         link.click();
         this.capturing = false;
+    }
+
+    // Dispose renderer, listeners and large GPU resources
+    dispose() {
+        try {
+            if (this.resizeHandler) window.removeEventListener('resize', this.resizeHandler);
+            if (this.visibilityHandler) document.removeEventListener('visibilitychange', this.visibilityHandler);
+            if (this.renderer && typeof (this.renderer as any).setAnimationLoop === 'function') {
+                (this.renderer as any).setAnimationLoop(null);
+            }
+            // best-effort renderer cleanup
+            try {
+                if (this.renderer && typeof (this.renderer as any).dispose === 'function') (this.renderer as any).dispose();
+            } catch (e) {
+                // ignore
+            }
+            // clear scene
+            try {
+                this.scene.traverse((obj: any) => {
+                    if (obj.geometry) try { obj.geometry.dispose(); } catch (e) {}
+                    if (obj.material) {
+                        if (Array.isArray(obj.material)) obj.material.forEach((m: any) => { try { m.dispose(); } catch (e) {} });
+                        else try { obj.material.dispose(); } catch (e) {}
+                    }
+                });
+            } catch (e) {
+                // ignore
+            }
+        } finally {
+            // drop singleton
+            try { (Root as any).instance = undefined; } catch (e) {}
+        }
     }
 }

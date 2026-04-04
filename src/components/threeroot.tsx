@@ -29,8 +29,20 @@ export default function ThreeRoot(): JSX.Element {
           pointerEvents: 'none',
         } as Partial<CSSStyleDeclaration>);
 
-        const hasWebGPU = typeof WebGPU?.isAvailable === 'function' ? WebGPU.isAvailable() : false;
-        if (!hasWebGPU) {
+        // WebGPU.isAvailable can be asynchronous. Await it and handle fallback.
+        let available = false;
+        try {
+          if (typeof WebGPU?.isAvailable === 'function') {
+            // isAvailable may return a Promise<boolean> or boolean
+            const res = WebGPU.isAvailable();
+            available = (res instanceof Promise) ? await res : res;
+          }
+        } catch (e) {
+          console.warn('ThreeRoot: WebGPU availability check failed', e);
+          available = false;
+        }
+
+        if (!available) {
           console.warn('ThreeRoot: WebGPU not available. Skipping renderer initialization.');
           return;
         }
@@ -52,7 +64,10 @@ export default function ThreeRoot(): JSX.Element {
 
     return () => {
       try {
-        if (scene && (scene as any).renderer && typeof (scene as any).renderer.setAnimationLoop === 'function') {
+        // Prefer calling the Root.dispose method if available for full cleanup
+        if ((Root as any).instance && typeof (Root as any).instance.dispose === 'function') {
+          (Root as any).instance.dispose();
+        } else if (scene && (scene as any).renderer && typeof (scene as any).renderer.setAnimationLoop === 'function') {
           (scene as any).renderer.setAnimationLoop(null);
         }
       } catch (e) {
