@@ -1,19 +1,19 @@
-import React, { lazy, Suspense } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
 import App from './App.tsx';
 import './index.css';
-const ThreeRoot = lazy(() => import('./components/threeroot'));
+import './App.css';
+
+// Console signal for verifying app initialization after refresh
+console.log('App initializing — main.tsx');
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <>
-    <Suspense fallback={null}>
-      <ThreeRoot />
-    </Suspense>
-    <React.StrictMode>
-      <HelmetProvider>
+  <React.StrictMode>
+    <HelmetProvider>
+      <div id="app">
         <App />
-      </HelmetProvider>
-    </React.StrictMode>
-  </>
+      </div>
+    </HelmetProvider>
+  </React.StrictMode>
 );

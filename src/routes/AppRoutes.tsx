@@ -46,7 +46,7 @@ import ProtectedRoute from '../auth/ProtectedRoute';
 
 export default function AppRoutes() {
   return (
-    <Suspense fallback={<LoadingSpinner /> }>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-white">Loading...</div>}>
       <Routes>
         <Route path="/" element={<Home />} />
 

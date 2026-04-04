@@ -1,8 +1,10 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, Suspense, lazy } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
 import ScrollToTop from './ScrollToTop';
+
+const ThreeRoot = lazy(() => import('./threeroot'));
 
 interface LayoutProps {
   children: ReactNode;
@@ -38,6 +40,13 @@ export default function Layout({
 
   return (
     <div className="app-background min-h-screen flex flex-col relative z-10" style={backgroundStyle}>
+      <Suspense fallback={null}>
+        <ThreeRoot />
+      </Suspense>
+
+      {/* Overlay between canvas and UI to restore original darker backdrop */}
+      <div className="canvas-overlay pointer-events-none" aria-hidden />
+
       <Header
         themeColor={themeColor}
         showAuthButtons={showAuthButtons}
