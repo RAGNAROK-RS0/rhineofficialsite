@@ -4,6 +4,7 @@ import WebGPU from "three/examples/jsm/capabilities/WebGPU.js";
 
 export default function ThreeRoot(): JSX.Element {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const rootRef = useRef<Root | null>(null);  // <-- store the instance
   const [initError, setInitError] = useState<Error | null>(null);
   const [hasWebGPU, setHasWebGPU] = useState<boolean | null>(null);
 
@@ -30,16 +31,11 @@ export default function ThreeRoot(): JSX.Element {
           pointerEvents: "none",
         } as Partial<CSSStyleDeclaration>);
 
-        // WebGPU.isAvailable may return boolean or Promise<boolean>.
-        // Await handles both sync and async return values.
         let available = false;
         try {
           if (typeof WebGPU?.isAvailable !== "function") {
             available = false;
           } else {
-            // await works whether isAvailable returns boolean or Promise<boolean>
-            // (TypeScript inference of Promise vs boolean is handled by await)
-            // eslint-disable-next-line @typescript-eslint/await-thenable
             available = await (WebGPU.isAvailable() as Promise<boolean> | boolean);
           }
         } catch (e) {
@@ -58,12 +54,58 @@ export default function ThreeRoot(): JSX.Element {
         }
 
         scene = new Root(canvas);
+        rootRef.current = scene;   // <-- save reference
         await scene.init();
+
+        // --- FIX: resize handler that updates renderer and camera ---
+        const handleResize = () => {
+          if (!rootRef.current) return;
+          const width = window.innerWidth;
+          const height = window.innerHeight;
+
+          // Update canvas element size (already done in the other effect, but safe)
+          if (canvasRef.current) {
+            canvasRef.current.width = width;
+            canvasRef.current.height = height;
+            canvasRef.current.style.width = `${width}px`;
+            canvasRef.current.style.height = `${height}px`;
+          }
+
+          // Update WebGPU renderer size (this prevents gray background)
+          rootRef.current.renderer?.setSize(width, height);
+
+          // Update camera aspect
+          if (rootRef.current.camera) {
+            rootRef.current.camera.aspect = width / height;
+            rootRef.current.camera.updateProjectionMatrix();
+          }
+        };
+
+        window.addEventListener("resize", handleResize);
+        // Call once to set initial size (avoids any mismatch on load)
+        handleResize();
+
+        // Store the cleanup function for later
+        const cleanupResize = () => window.removeEventListener("resize", handleResize);
+
+        // Override the return function to also remove resize listener
+        const originalReturn = () => {
+          cancelled = true;
+          cleanupResize();
+          try {
+            if ((Root as any).instance && typeof (Root as any).instance.dispose === "function") {
+              (Root as any).instance.dispose();
+            } else if (scene && (scene as any).renderer && typeof (scene as any).renderer.setAnimationLoop === "function") {
+              (scene as any).renderer.setAnimationLoop(null);
+            }
+          } catch (e) {}
+        };
+        // We'll replace the cleanup function later, but for now we need to keep it.
+        // Instead, we'll attach the cleanup to the effect's return.
+        return originalReturn;
       } catch (err: any) {
         const error = err instanceof Error ? err : new Error(String(err));
         setInitError(error);
-        // visible console error for debugging
-        // eslint-disable-next-line no-console
         console.error("ThreeRoot init failed:", err);
       }
     };
@@ -78,13 +120,11 @@ export default function ThreeRoot(): JSX.Element {
         } else if (scene && (scene as any).renderer && typeof (scene as any).renderer.setAnimationLoop === "function") {
           (scene as any).renderer.setAnimationLoop(null);
         }
-      } catch (e) {
-        // ignore cleanup errors
-      }
+      } catch (e) {}
     };
   }, []);
 
-  // Keep canvas size in sync with viewport
+  // Keep canvas size in sync with viewport (only canvas element, not renderer)
   useEffect(() => {
     const resizeCanvas = () => {
       const canvas = canvasRef.current;
@@ -100,7 +140,6 @@ export default function ThreeRoot(): JSX.Element {
     return () => window.removeEventListener("resize", resizeCanvas);
   }, []);
 
-  // If we've determined WebGPU is unavailable, render a safe static fallback
   if (hasWebGPU === false) {
     return <div className="fixed inset-0 bg-gradient-to-br from-gray-900 to-black -z-10" aria-hidden />;
   }
