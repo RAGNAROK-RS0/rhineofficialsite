@@ -1,12 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Root } from "../lib/Root";
 import WebGPU from "three/examples/jsm/capabilities/WebGPU.js";
+import { useDeviceCapabilities } from "../hooks/useDeviceCapabilities";
+import { useAdaptiveQuality } from "../hooks/useDeviceCapabilities";
 
-export default function ThreeRoot(): JSX.Element {
+interface ThreeRootProps {
+  fallback?: React.ReactNode;
+}
+
+export default function ThreeRoot({ fallback }: ThreeRootProps): JSX.Element {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const rootRef = useRef<Root | null>(null);  // <-- store the instance
+  const rootRef = useRef<Root | null>(null);
   const [initError, setInitError] = useState<Error | null>(null);
   const [hasWebGPU, setHasWebGPU] = useState<boolean | null>(null);
+  const { hasWebGL, isMobile, isLowEnd, gpuTier } = useDeviceCapabilities();
+  const { shouldUsePostProcessing } = useAdaptiveQuality();
 
   useEffect(() => {
     let scene: Root | null = null;
@@ -50,6 +58,14 @@ export default function ThreeRoot(): JSX.Element {
           const err = new Error("WebGPU not available on this platform/browser");
           setInitError(err);
           console.warn("ThreeRoot: WebGPU not available. Falling back to gradient.");
+          return;
+        }
+
+        // Skip WebGPU on low-end or mobile devices if post-processing is disabled
+        if ((isLowEnd || isMobile) && !shouldUsePostProcessing()) {
+          const err = new Error("Skipping WebGPU on low-end device");
+          setInitError(err);
+          console.warn("ThreeRoot: Skipping WebGPU on low-end/mobile device.");
           return;
         }
 
@@ -122,7 +138,7 @@ export default function ThreeRoot(): JSX.Element {
         }
       } catch (e) {}
     };
-  }, []);
+  }, [isMobile, isLowEnd, shouldUsePostProcessing]);
 
   // Keep canvas size in sync with viewport (only canvas element, not renderer)
   useEffect(() => {
@@ -140,8 +156,18 @@ export default function ThreeRoot(): JSX.Element {
     return () => window.removeEventListener("resize", resizeCanvas);
   }, []);
 
-  if (hasWebGPU === false) {
-    return <div className="fixed inset-0 bg-gradient-to-br from-gray-900 to-black -z-10" aria-hidden />;
+  if (hasWebGPU === false || initError?.message?.includes('Skipping')) {
+    const fallbackContent = (isLowEnd || isMobile) ? (
+      <div className="fixed inset-0 bg-gradient-to-br from-gray-900 to-black -z-10" aria-hidden>
+        <div className="absolute bottom-4 left-4 text-xs text-white/30">
+          GPU: {gpuTier} | Mobile: {isMobile ? 'yes' : 'no'}
+        </div>
+      </div>
+    ) : (
+      <div className="fixed inset-0 bg-gradient-to-br from-gray-900 to-black -z-10" aria-hidden />
+    );
+    
+    return fallback ? <>{fallback}</> : fallbackContent;
   }
 
   return (
