@@ -44,6 +44,7 @@ const DashboardPage = lazy(() => import('../pages/Dashboard'));
 const Privacy = lazy(() => import('../pages/Privacy'));
 const Terms = lazy(() => import('../pages/Terms'));
 const NotFound = lazy(() => import('../pages/NotFound'));
+const ResetPassword = lazy(() => import('../pages/ResetPassword'));
 
 import ProtectedRoute from '../auth/ProtectedRoute';
 
@@ -98,6 +99,7 @@ export default function AppRoutes() {
         {/* Legal pages */}
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* 404 */}
         <Route path="*" element={<NotFound />} />
