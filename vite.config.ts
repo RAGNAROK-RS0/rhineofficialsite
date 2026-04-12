@@ -53,10 +53,12 @@ export default defineConfig({
           'vendor-three': ['three', '@splinetool/react-spline', '@splinetool/runtime'],
           'vendor-ui': ['lucide-react', 'gsap'],
           'vendor-auth': ['@supabase/supabase-js'],
+          'vendor-charts': ['recharts'],
+          'vendor-i18n': ['i18next', 'react-i18next'],
         },
       },
     },
-    chunkSizeWarningLimit: 700,
+    chunkSizeWarningLimit: 400,
     minify: 'esbuild',
     sourcemap: false,
     reportCompressedSize: true,
@@ -70,13 +72,5 @@ export default defineConfig({
     esbuildOptions: {
       target: 'esnext'
     }
-  },
-  server: {
-    port: 5173,
-    host: true,
-  },
-  preview: {
-    port: 4173,
-    host: true,
   },
 })

@@ -98,7 +98,9 @@ export default function ThreeRoot(): JSX.Element {
             } else if (scene && (scene as any).renderer && typeof (scene as any).renderer.setAnimationLoop === "function") {
               (scene as any).renderer.setAnimationLoop(null);
             }
-          } catch (e) {}
+          } catch (e) {
+            console.warn('ThreeRoot cleanup failed:', e);
+          }
         };
         // We'll replace the cleanup function later, but for now we need to keep it.
         // Instead, we'll attach the cleanup to the effect's return.

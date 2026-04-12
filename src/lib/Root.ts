@@ -131,18 +131,30 @@ export class Root {
             }
             try {
                 if (this.renderer && typeof (this.renderer as any).dispose === 'function') (this.renderer as any).dispose();
-            } catch (e) {}
+            } catch (e) {
+                console.warn('Failed to dispose renderer:', e);
+            }
             try {
                 this.scene.traverse((obj: any) => {
-                    if (obj.geometry) try { obj.geometry.dispose(); } catch (e) {}
+                    if (obj.geometry) try { obj.geometry.dispose(); } catch (e) {
+                        console.warn('Failed to dispose geometry:', e);
+                    }
                     if (obj.material) {
-                        if (Array.isArray(obj.material)) obj.material.forEach((m: any) => { try { m.dispose(); } catch (e) {} });
-                        else try { obj.material.dispose(); } catch (e) {}
+                        if (Array.isArray(obj.material)) obj.material.forEach((m: any) => { try { m.dispose(); } catch (e) {
+                            console.warn('Failed to dispose material:', e);
+                        }});
+                        else try { obj.material.dispose(); } catch (e) {
+                            console.warn('Failed to dispose material:', e);
+                        }
                     }
                 });
-            } catch (e) {}
+            } catch (e) {
+                console.warn('Failed to traverse scene:', e);
+            }
         } finally {
-            try { (Root as any).instance = undefined; } catch (e) {}
+            try { (Root as any).instance = undefined; } catch (e) {
+                console.warn('Failed to clear root instance:', e);
+            }
         }
     }
 }

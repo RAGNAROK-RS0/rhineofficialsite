@@ -27,10 +27,30 @@ const CybersecuritySuite = lazy(() => import('../pages/Solutions/CybersecuritySu
 const DataAnalytics = lazy(() => import('../pages/Solutions/DataAnalytics'));
 
 const Technology = lazy(() => import('../pages/Technology/Technology'));
+const ShaderDemo = lazy(() => import('../pages/Technology/ShaderDemo'));
+const AIIntegration = lazy(() => import('../pages/Technology/AIIntegration'));
+const AdvancedAnalytics = lazy(() => import('../pages/Technology/AdvancedAnalytics'));
+const MobileApp = lazy(() => import('../pages/Technology/MobileApp'));
+const EdgeComputing = lazy(() => import('../pages/Technology/EdgeComputing'));
+const VideoStreaming = lazy(() => import('../pages/Technology/VideoStreaming'));
+const TeamCollaboration = lazy(() => import('../pages/Technology/TeamCollaboration'));
+const Gamification = lazy(() => import('../pages/Technology/Gamification'));
+const AdvancedCMS = lazy(() => import('../pages/Technology/AdvancedCMS'));
+const DeveloperPlatform = lazy(() => import('../pages/Technology/DeveloperPlatform'));
 const WebGPU3D = lazy(() => import('../pages/Technology/WebGPU3D'));
 const BlockchainWeb3 = lazy(() => import('../pages/Technology/BlockchainWeb3'));
 const IoTEdge = lazy(() => import('../pages/Technology/IoTEdge'));
 const CustomAPIs = lazy(() => import('../pages/Technology/CustomAPIs'));
+const MultiTenant = lazy(() => import('../pages/Technology/MultiTenant'));
+const AdvancedSecurity = lazy(() => import('../pages/Technology/AdvancedSecurity'));
+const VoiceChat = lazy(() => import('../pages/Technology/VoiceChat'));
+const ARVR = lazy(() => import('../pages/Technology/ARVR'));
+const BlockchainIntegration = lazy(() => import('../pages/Technology/BlockchainIntegration'));
+const PerformanceMonitoring = lazy(() => import('../pages/Technology/PerformanceMonitoring'));
+const IoTIntegration = lazy(() => import('../pages/Technology/IoTIntegration'));
+const AdvancedIntegrations = lazy(() => import('../pages/Technology/AdvancedIntegrations'));
+const AdvancedSearchPage = lazy(() => import('../pages/Technology/AdvancedSearch'));
+const ContinuousEvolution = lazy(() => import('../pages/Technology/ContinuousEvolution'));
 
 const Resources = lazy(() => import('../pages/Resources/Resources'));
 const CaseStudies = lazy(() => import('../pages/Resources/CaseStudies'));
@@ -78,10 +98,30 @@ export default function AppRoutes() {
 
         {/* Technology */}
         <Route path="/technology" element={<Technology />} />
+        <Route path="/technology/shader-demo" element={<ShaderDemo />} />
+        <Route path="/technology/ai-integration" element={<AIIntegration />} />
+        <Route path="/technology/advanced-analytics" element={<AdvancedAnalytics />} />
+        <Route path="/technology/mobile-app" element={<MobileApp />} />
+        <Route path="/technology/edge-computing" element={<EdgeComputing />} />
+        <Route path="/technology/video-streaming" element={<VideoStreaming />} />
+        <Route path="/technology/team-collaboration" element={<TeamCollaboration />} />
+        <Route path="/technology/gamification" element={<Gamification />} />
+        <Route path="/technology/advanced-cms" element={<AdvancedCMS />} />
+        <Route path="/technology/developer-platform" element={<DeveloperPlatform />} />
         <Route path="/technology/webgpu-3d" element={<WebGPU3D />} />
         <Route path="/technology/blockchain-web3" element={<BlockchainWeb3 />} />
         <Route path="/technology/iot-edge" element={<IoTEdge />} />
         <Route path="/technology/custom-apis" element={<CustomAPIs />} />
+        <Route path="/technology/multi-tenant" element={<MultiTenant />} />
+        <Route path="/technology/advanced-security" element={<AdvancedSecurity />} />
+        <Route path="/technology/voice-chat" element={<VoiceChat />} />
+        <Route path="/technology/ar-vr" element={<ARVR />} />
+        <Route path="/technology/blockchain-integration" element={<BlockchainIntegration />} />
+        <Route path="/technology/performance-monitoring" element={<PerformanceMonitoring />} />
+        <Route path="/technology/iot-integration" element={<IoTIntegration />} />
+        <Route path="/technology/advanced-integrations" element={<AdvancedIntegrations />} />
+        <Route path="/technology/advanced-search" element={<AdvancedSearchPage />} />
+        <Route path="/technology/continuous-evolution" element={<ContinuousEvolution />} />
 
         {/* Resources */}
         <Route path="/resources" element={<Resources />} />

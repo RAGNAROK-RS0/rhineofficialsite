@@ -8,6 +8,11 @@ interface DeviceCapabilities {
   gpuTier: 'high' | 'medium' | 'low';
   maxTextureSize: number;
   renderer: string;
+  supportsWebGPU: boolean;
+  webGPUDevice: GPUDevice | null;
+  shaderPrecision: 'high' | 'medium' | 'low';
+  maxComputeWorkGroupSize: number;
+  maxStorageBufferBindingSize: number;
 }
 
 export function useDeviceCapabilities(): DeviceCapabilities {
@@ -19,6 +24,11 @@ export function useDeviceCapabilities(): DeviceCapabilities {
     gpuTier: 'medium',
     maxTextureSize: 4096,
     renderer: 'unknown',
+    supportsWebGPU: false,
+    webGPUDevice: null,
+    shaderPrecision: 'medium',
+    maxComputeWorkGroupSize: 256,
+    maxStorageBufferBindingSize: 0,
   });
 
   useEffect(() => {
@@ -30,6 +40,10 @@ export function useDeviceCapabilities(): DeviceCapabilities {
       let hasWebGPU = false;
       let renderer = 'unknown';
       let maxTextureSize = 4096;
+      let webGPUDevice: GPUDevice | null = null;
+      let shaderPrecision: 'high' | 'medium' | 'low' = 'medium';
+      let maxComputeWorkGroupSize = 256;
+      let maxStorageBufferBindingSize = 0;
 
       try {
         const canvas = document.createElement('canvas');
@@ -48,13 +62,33 @@ export function useDeviceCapabilities(): DeviceCapabilities {
       }
 
       try {
-        const webgpuModule = await import('three/examples/jsm/capabilities/WebGPU.js');
-        if (webgpuModule && typeof webgpuModule.default?.isAvailable === 'function') {
-          const isAvailable = await webgpuModule.default.isAvailable();
-          hasWebGPU = isAvailable === true;
+        if ('gpu' in navigator) {
+          const gpu = (navigator as any).gpu;
+          const adapter = await gpu.requestAdapter();
+          if (adapter) {
+            hasWebGPU = true;
+            webGPUDevice = await adapter.requestDevice();
+            
+            const features = adapter.features;
+            if (features.has('shader-f16')) shaderPrecision = 'high';
+            else if (features.has('shader-int8')) shaderPrecision = 'medium';
+            
+            maxComputeWorkGroupSize = (adapter.limits as any).maxComputeWorkgroupSizeX || 256;
+            maxStorageBufferBindingSize = (adapter.limits as any).maxStorageBufferBindingSize || 0;
+          }
         }
       } catch (e) {
         console.warn('WebGPU detection failed:', e);
+      }
+
+      try {
+        const webgpuModule = await import('three/examples/jsm/capabilities/WebGPU.js');
+        if (webgpuModule && typeof webgpuModule.default?.isAvailable === 'function') {
+          const isAvailable = await webgpuModule.default.isAvailable();
+          hasWebGPU = hasWebGPU || isAvailable === true;
+        }
+      } catch (e) {
+        console.warn('Three.js WebGPU detection failed:', e);
       }
 
       const lowEndGpuNames = ['mali-4', 'mali-t', 'adreno 3', 'adreno 4', 'intel hd', 'intel iris', 'swiftshader'];
@@ -75,6 +109,11 @@ export function useDeviceCapabilities(): DeviceCapabilities {
         gpuTier,
         maxTextureSize,
         renderer,
+        supportsWebGPU: hasWebGPU,
+        webGPUDevice,
+        shaderPrecision,
+        maxComputeWorkGroupSize,
+        maxStorageBufferBindingSize,
       });
     };
 

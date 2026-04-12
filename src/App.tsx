@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import AppRoutes from './routes/AppRoutes';
 import { AuthModalProvider } from './auth/AuthModalProvider';
@@ -6,6 +6,8 @@ import ErrorBoundary from './components/ErrorBoundary';
 import SecurityHeaders from './components/SecurityHeaders';
 import { Analytics, initSentry, trackPageView, SentryErrorBoundary } from './lib/analytics';
 import SearchModal from './components/SearchModal';
+
+const AIChatBot = lazy(() => import('./components/AIChatBot').then(m => ({ default: m.AIChatBot })));
 
 export default function App() {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -40,6 +42,9 @@ export default function App() {
       <SecurityHeaders />
       <Analytics />
       <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+      <Suspense fallback={null}>
+        <AIChatBot />
+      </Suspense>
       <SentryErrorBoundary>
         <AuthModalProvider>
           <ErrorBoundary>

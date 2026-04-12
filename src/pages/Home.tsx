@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../App.css';
 import WebGPU from 'three/examples/jsm/capabilities/WebGPU.js';
@@ -11,6 +11,8 @@ export default function Home() {
   const [hasWebGPU, setHasWebGPU] = useState(false);
   const [hue, setHue] = useState(0);
   const [displayZoom, setDisplayZoom] = useState(0);
+  const lastTimestampRef = useRef<number>(0);
+  const rafIdRef = useRef<number>(0);
 
   useEffect(() => {
     setHasWebGPU(WebGPU.isAvailable());
@@ -21,18 +23,18 @@ export default function Home() {
     };
     syncHUD();
 
-    let rafId: number;
-    let lastTimestamp = 0;
     const speed = 0.5;
     const animate = (timestamp: number) => {
-      if (!lastTimestamp) lastTimestamp = timestamp;
-      const delta = Math.min(0.03, (timestamp - lastTimestamp) / 1000);
-      lastTimestamp = timestamp;
+      if (!lastTimestampRef.current) lastTimestampRef.current = timestamp;
+      const delta = Math.min(0.03, (timestamp - lastTimestampRef.current) / 1000);
+      lastTimestampRef.current = timestamp;
       setHue((prev) => (prev + delta * speed * 360) % 360);
-      rafId = requestAnimationFrame(animate);
+      rafIdRef.current = requestAnimationFrame(animate);
     };
-    rafId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafId);
+    rafIdRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+    };
   }, []);
 
   const themeColor = `hsl(${hue}, 100%, 60%)`;

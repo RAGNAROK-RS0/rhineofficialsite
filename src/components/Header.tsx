@@ -5,7 +5,7 @@ import SideMenu from './SideMenu';
 import UserDropdown from './UserDropdown';
 import AuthButton from '../auth/AuthButton';
 import { useAuthModal } from '../auth/AuthModalProvider';
-import LanguageSwitcher from './LanguageSwitcher';
+
 
 type HeaderProps = {
   themeColor?: string;
@@ -331,8 +331,7 @@ export default function Header({
 
       {/* Mobile Hamburger Button — rendered only when NOT desktop */}
       {!disableSideMenu && !isDesktop && (
-        <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
-          <LanguageSwitcher />
+        <div className="fixed top-4 right-4 z-50">
           <button
             onClick={openMobileMenu}
             className="flex items-center justify-center w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 text-white hover:bg-black/60 transition-all"
@@ -345,17 +344,10 @@ export default function Header({
         </div>
       )}
 
-      {/* Desktop Language Switcher */}
-      {isDesktop && (
-        <div className="fixed top-4 right-20 z-50">
-          <LanguageSwitcher />
-        </div>
-      )}
-
-      {/* Desktop User Account Dropdown */}
-      {showAuthButtons && isDesktop && (
-        <div className="fixed top-4 right-4 z-50">
-          <UserDropdown themeColor={themeColor} />
+      {/* Desktop User Account */}
+      {(showAuthButtons || isDesktop) && isDesktop && (
+        <div className="fixed top-4 right-4 z-[60] flex items-center gap-2">
+          {showAuthButtons && <UserDropdown themeColor={themeColor} className="flex-shrink-0" />}
         </div>
       )}
 

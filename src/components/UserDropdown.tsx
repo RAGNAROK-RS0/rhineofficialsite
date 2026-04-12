@@ -6,9 +6,10 @@ import { useAuthModal } from '../auth/AuthModalProvider';
 
 type UserDropdownProps = {
   themeColor?: string;
+  className?: string;
 };
 
-export default function UserDropdown({ themeColor = '#4f46e5' }: UserDropdownProps) {
+export default function UserDropdown({ themeColor = '#4f46e5', className = '' }: UserDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState<{ id: string; email?: string; user_metadata?: Record<string, unknown> } | null>(null);
   const [loading, setLoading] = useState(true);
@@ -103,7 +104,7 @@ export default function UserDropdown({ themeColor = '#4f46e5' }: UserDropdownPro
   }
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className={`relative ${className}`} ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-2 py-1.5 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 hover:bg-black/60 transition-all"

@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { githubIcon, twitterIcon } from './GFX';
 import { MessageCircle, Link2 } from 'lucide-react';
-import LanguageSwitcher from './LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 
 type Props = {
@@ -169,12 +168,6 @@ export default function Footer({ themeColor = '#4f46e5' }: Props) {
               />
               <div className="text-white/50 text-sm">
                 {t('footer.copyright', { year })}
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <LanguageSwitcher />
-              <div className="text-white/30 text-xs">
-                Powered by innovation
               </div>
             </div>
           </div>
