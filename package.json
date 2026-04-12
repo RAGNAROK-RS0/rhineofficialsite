@@ -10,7 +10,12 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "docker:build": "docker build -t rhine-solution .",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:dev": "docker-compose up dev",
+    "deploy:cloudflare": "npm run build && npx wrangler pages deploy dist"
   },
   "dependencies": {
     "@marsidev/react-turnstile": "^1.5.0",
