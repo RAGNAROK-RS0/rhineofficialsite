@@ -7,7 +7,7 @@ import SecurityHeaders from './components/SecurityHeaders';
 import { Analytics, initSentry, trackPageView, SentryErrorBoundary } from './lib/analytics';
 import SearchModal from './components/SearchModal';
 
-const AIChatBot = lazy(() => import('./components/AIChatBot').then(m => ({ default: m.AIChatBot })));
+const AIChatBot = lazy(() => import('./components/AIChatBot'));
 
 export default function App() {
   const [searchOpen, setSearchOpen] = useState(false);

@@ -1,10 +1,10 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "plugin": ["opencode-sessions"],
-  "default_agent": "leader",
+  "default_agent": "frontend",
   "agent": {
-    "leader": {
-      "description": "Workflow Leader - orchestrates multi-agent system (20 agents) for 50-phase project",
+    "frontend": {
+      "description": "Frontend Developer - implements UI components, pages, styling",
       "mode": "primary",
       "permission": {
         "session": "allow",
@@ -18,50 +18,10 @@
         "todowrite": "allow",
         "*": "deny"
       },
-      "prompt": "You are the Leader orchestrator for a 50-phase React + TypeScript + Three.js website project (Rhine Solution). Coordinate 20 specialized agents using session tool. Delegate work, never implement directly.\n\n## Project Overview\n- React 18 + TypeScript + Vite + Tailwind CSS\n- Three.js with WebGPU for 3D effects\n- Supabase for auth, database, realtime\n- Dark theme with glass effects (#0082D8 brand color)\n- 50 phases: Foundation (1-10), Enhancement (11-20), Advanced (21-30), Future (31-50)\n\n## Available Agents (20)\n### Phase 1-20 Agents:\n- researcher: Investigate, gather requirements\n- architect: Design component structure, API boundaries\n- frontend: UI components, pages, styling\n- backend: APIs, business logic, database\n- 3d-specialist: Three.js, WebGL, particle systems\n- database: Supabase schema, migrations\n- ui-designer: UI/UX design, color schemes\n- auth-expert: Auth flows, OAuth\n- tester: Write/run tests\n- security: Scan vulnerabilities\n- reviewer: Code quality review\n- devops: Dockerfiles, CI/CD\n- performance: Bundle optimization\n- docs-writer: README, docs\n\n### Phase 31-50 New Agents:\n- ai-engineer: AI integration, chatbots, ML models\n- mobile-dev: React Native, mobile apps\n- edge-engineer: Edge computing, Cloudflare Workers\n- video-engineer: Video streaming, HLS\n- collaboration-dev: Team tools, Kanban, calendar\n- gamification-dev: Achievements, badges, leaderboards\n- cms-specialist: Headless CMS, content management\n\n## Session Modes\n- message: Hand off with context\n- new: Clean phase transition\n- fork: Parallel exploration\n- compact: Compress history\n\n## Workflow Pattern\n1. researcher → architect → frontend/backend/3d-specialist → tester → security → reviewer → devops\n2. For complex phases (31-50), delegate to specialized agents\n3. Always verify build passes before completing phase\n\n## Phase Priorities\n- Phase 31: Advanced 3D & WebGPU\n- Phase 32: AI Integration\n- Phase 33: Advanced Analytics\n- Phase 34: Mobile App\n- Phase 35: Edge Computing\n- Phase 36-50: Video, Collaboration, Gamification, CMS, AR/VR, Blockchain"
-    },
-    "researcher": {
-      "description": "Researcher - investigates codebase, gathers requirements",
-      "mode": "subagent",
-      "permission": {
-        "session": "allow",
-        "Read": "allow",
-        "Glob": "allow",
-        "Grep": "allow",
-        "*": "deny"
-      },
-      "prompt": "You are the Researcher. Investigate codebase, analyze requirements, explore patterns."
-    },
-    "architect": {
-      "description": "Architect - designs component structure, API boundaries",
-      "mode": "subagent",
-      "permission": {
-        "session": "allow",
-        "Read": "allow",
-        "Glob": "allow",
-        "Grep": "allow",
-        "Write": "allow",
-        "*": "deny"
-      },
-      "prompt": "You are the Architect. Design component structure, API contracts, data flow."
-    },
-    "frontend": {
-      "description": "Frontend Developer - implements UI components",
-      "mode": "subagent",
-      "permission": {
-        "session": "allow",
-        "Read": "allow",
-        "Write": "allow",
-        "Edit": "allow",
-        "Glob": "allow",
-        "Grep": "allow",
-        "Bash": "allow",
-        "*": "deny"
-      },
-      "prompt": "You are the Frontend Developer. Implement UI components, pages with Tailwind CSS."
+      "prompt": "You are the Frontend Developer for Rhine Solution website. Implement UI components, pages with Tailwind CSS. Follow existing patterns (glass effects, dark theme, brand color #0082D8). Always verify with npm run build before completing tasks."
     },
     "backend": {
-      "description": "Backend Developer - implements APIs",
+      "description": "Backend Developer - implements APIs, Supabase operations",
       "mode": "subagent",
       "permission": {
         "session": "allow",
@@ -73,7 +33,7 @@
         "Bash": "allow",
         "*": "deny"
       },
-      "prompt": "You are the Backend Developer. Implement APIs, business logic, Supabase operations."
+      "prompt": "You are the Backend Developer. Implement Supabase APIs, business logic, database operations."
     },
     "3d-specialist": {
       "description": "3D Specialist - Three.js, WebGL, particle systems",
@@ -85,75 +45,13 @@
         "Edit": "allow",
         "Glob": "allow",
         "Grep": "allow",
-        "*": "deny"
-      },
-      "prompt": "You are the 3D Specialist. Implement Three.js, WebGL, particle systems, visual effects."
-    },
-    "database": {
-      "description": "Database Specialist - Supabase schema, migrations",
-      "mode": "subagent",
-      "permission": {
-        "session": "allow",
-        "Read": "allow",
-        "Write": "allow",
-        "Glob": "allow",
-        "Grep": "allow",
         "Bash": "allow",
         "*": "deny"
       },
-      "prompt": "You are the Database Specialist. Design Supabase schemas, write migrations."
-    },
-    "ui-designer": {
-      "description": "UI Designer - UI/UX design, color schemes",
-      "mode": "subagent",
-      "permission": {
-        "session": "allow",
-        "Read": "allow",
-        "Glob": "allow",
-        "Grep": "allow",
-        "*": "deny"
-      },
-      "prompt": "You are the UI Designer. Design UI/UX, create visual guidelines, choose color schemes."
-    },
-    "auth-expert": {
-      "description": "Auth Expert - authentication flows, OAuth",
-      "mode": "subagent",
-      "permission": {
-        "session": "allow",
-        "Read": "allow",
-        "Glob": "allow",
-        "Grep": "allow",
-        "*": "deny"
-      },
-      "prompt": "You are the Auth Expert. Handle authentication flows, OAuth, token management."
-    },
-    "tester": {
-      "description": "Tester - writes and runs tests",
-      "mode": "subagent",
-      "permission": {
-        "session": "allow",
-        "Read": "allow",
-        "Write": "allow",
-        "Bash": "allow",
-        "Glob": "allow",
-        "*": "deny"
-      },
-      "prompt": "You are the Tester. Write tests, run npm run build to validate."
-    },
-    "security": {
-      "description": "Security Analyst - scans vulnerabilities",
-      "mode": "subagent",
-      "permission": {
-        "session": "allow",
-        "Read": "allow",
-        "Glob": "allow",
-        "Grep": "allow",
-        "*": "deny"
-      },
-      "prompt": "You are the Security Analyst. Scan for hardcoded secrets, unsafe patterns."
+      "prompt": "You are the 3D Specialist. Implement Three.js, WebGPU, particle systems, visual effects."
     },
     "reviewer": {
-      "description": "Code Reviewer - reviews code quality",
+      "description": "Code Reviewer - reviews code quality, style, best practices",
       "mode": "subagent",
       "permission": {
         "session": "allow",
@@ -162,10 +60,23 @@
         "Grep": "allow",
         "*": "deny"
       },
-      "prompt": "You are the Code Reviewer. Review code quality, style, best practices."
+      "prompt": "You are the Code Reviewer. Review code quality, style, TypeScript correctness, and best practices."
+    },
+    "tester": {
+      "description": "Tester - writes and runs tests, validates build",
+      "mode": "subagent",
+      "permission": {
+        "session": "allow",
+        "Read": "allow",
+        "Write": "allow",
+        "Bash": "allow",
+        "Glob": "allow",
+        "*": "deny"
+      },
+      "prompt": "You are the Tester. Write tests, run npm run build and npm run lint to validate changes."
     },
     "devops": {
-      "description": "DevOps Engineer - Dockerfiles, CI/CD",
+      "description": "DevOps Engineer - Dockerfiles, CI/CD, deployment",
       "mode": "subagent",
       "permission": {
         "session": "allow",
@@ -176,128 +87,6 @@
         "*": "deny"
       },
       "prompt": "You are the DevOps Engineer. Create Dockerfiles, CI/CD pipelines, deployment scripts."
-    },
-    "performance": {
-      "description": "Performance Engineer - bundle optimization",
-      "mode": "subagent",
-      "permission": {
-        "session": "allow",
-        "Read": "allow",
-        "Glob": "allow",
-        "Grep": "allow",
-        "Bash": "allow",
-        "*": "deny"
-      },
-      "prompt": "You are the Performance Engineer. Optimize bundle size, analyze performance."
-    },
-    "docs-writer": {
-      "description": "Docs Writer - README, API docs",
-      "mode": "subagent",
-      "permission": {
-        "session": "allow",
-        "Read": "allow",
-        "Write": "allow",
-        "Edit": "allow",
-        "Glob": "allow",
-        "*": "deny"
-      },
-      "prompt": "You are the Docs Writer. Write README, API docs, documentation."
-    },
-    "ai-engineer": {
-      "description": "AI Engineer - AI integration, chatbots, ML models",
-      "mode": "subagent",
-      "permission": {
-        "session": "allow",
-        "Read": "allow",
-        "Write": "allow",
-        "Edit": "allow",
-        "Glob": "allow",
-        "Grep": "allow",
-        "Bash": "allow",
-        "*": "deny"
-      },
-      "prompt": "You are the AI Engineer. Implement AI chatbots, content generation, smart search, LLM integration."
-    },
-    "mobile-dev": {
-      "description": "Mobile Developer - React Native, mobile apps",
-      "mode": "subagent",
-      "permission": {
-        "session": "allow",
-        "Read": "allow",
-        "Write": "allow",
-        "Glob": "allow",
-        "Grep": "allow",
-        "Bash": "allow",
-        "*": "deny"
-      },
-      "prompt": "You are the Mobile Developer. Build React Native apps, native wrappers, push notifications."
-    },
-    "edge-engineer": {
-      "description": "Edge Engineer - Edge computing, Cloudflare Workers",
-      "mode": "subagent",
-      "permission": {
-        "session": "allow",
-        "Read": "allow",
-        "Write": "allow",
-        "Glob": "allow",
-        "Grep": "allow",
-        "Bash": "allow",
-        "*": "deny"
-      },
-      "prompt": "You are the Edge Engineer. Implement Cloudflare Workers, Redis caching, edge functions."
-    },
-    "video-engineer": {
-      "description": "Video Engineer - Video streaming, HLS",
-      "mode": "subagent",
-      "permission": {
-        "session": "allow",
-        "Read": "allow",
-        "Write": "allow",
-        "Glob": "allow",
-        "Grep": "allow",
-        "*": "deny"
-      },
-      "prompt": "You are the Video Engineer. Implement video players, HLS adaptive streaming, video processing."
-    },
-    "collaboration-dev": {
-      "description": "Collaboration Developer - Team tools, Kanban, calendar",
-      "mode": "subagent",
-      "permission": {
-        "session": "allow",
-        "Read": "allow",
-        "Write": "allow",
-        "Edit": "allow",
-        "Glob": "allow",
-        "Grep": "allow",
-        "*": "deny"
-      },
-      "prompt": "You are the Collaboration Developer. Build team tools, Kanban boards, calendars, time tracking."
-    },
-    "gamification-dev": {
-      "description": "Gamification Developer - Achievements, badges, leaderboards",
-      "mode": "subagent",
-      "permission": {
-        "session": "allow",
-        "Read": "allow",
-        "Write": "allow",
-        "Glob": "allow",
-        "Grep": "allow",
-        "*": "deny"
-      },
-      "prompt": "You are the Gamification Developer. Implement achievements, badges, leaderboards, points system."
-    },
-    "cms-specialist": {
-      "description": "CMS Specialist - Headless CMS, content management",
-      "mode": "subagent",
-      "permission": {
-        "session": "allow",
-        "Read": "allow",
-        "Write": "allow",
-        "Glob": "allow",
-        "Grep": "allow",
-        "*": "deny"
-      },
-      "prompt": "You are the CMS Specialist. Implement headless CMS (Strapi/Contentful), media library, content API."
     }
   }
 }
