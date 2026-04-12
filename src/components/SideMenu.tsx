@@ -189,7 +189,18 @@ export default function SideMenu({
 
     // --- Portfolio category ---
     if (category === 'Portfolio') {
-      navigate('/portfolio');
+      const categoryMap: Record<string, string> = {
+        'All Projects': '',
+        'Web Development': 'Web Development',
+        'Cloud': 'Cloud Infrastructure',
+        'AI & Automation': 'AI & Automation'
+      };
+      const filter = categoryMap[item];
+      if (filter) {
+        navigate(`/portfolio?category=${encodeURIComponent(filter)}`);
+      } else {
+        navigate('/portfolio');
+      }
       return;
     }
 
@@ -203,7 +214,12 @@ export default function SideMenu({
       };
       const sectionId = sectionMap[item];
       if (sectionId) {
-        scrollToSection(sectionId);
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          navigate('/services');
+        }
       } else {
         navigate('/services');
       }
@@ -219,7 +235,12 @@ export default function SideMenu({
       };
       const sectionId = sectionMap[item];
       if (sectionId) {
-        scrollToSection(sectionId);
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          navigate('/solutions');
+        }
       } else {
         navigate('/solutions');
       }
@@ -235,7 +256,12 @@ export default function SideMenu({
       };
       const sectionId = sectionMap[item];
       if (sectionId) {
-        scrollToSection(sectionId);
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          navigate('/technology');
+        }
       } else {
         navigate('/technology');
       }
@@ -251,7 +277,12 @@ export default function SideMenu({
       };
       const sectionId = sectionMap[item];
       if (sectionId) {
-        scrollToSection(sectionId);
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          navigate('/resources');
+        }
       } else {
         navigate('/resources');
       }
