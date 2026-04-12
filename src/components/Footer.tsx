@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { githubIcon, twitterIcon } from './GFX';
 import { MessageCircle, Link2 } from 'lucide-react';
+import LanguageSwitcher from './LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   themeColor?: string;
@@ -76,6 +78,7 @@ const footerLinks = {
 };
 
 export default function Footer({ themeColor = '#4f46e5' }: Props) {
+  const { t } = useTranslation();
   const year = new Date().getFullYear();
   
   return (
@@ -113,7 +116,7 @@ export default function Footer({ themeColor = '#4f46e5' }: Props) {
 
           {/* Company Links */}
           <div>
-            <h4 className="text-white font-semibold uppercase tracking-wider text-sm mb-4">Company</h4>
+            <h4 className="text-white font-semibold uppercase tracking-wider text-sm mb-4">{t('nav.company')}</h4>
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.name}>
@@ -127,7 +130,7 @@ export default function Footer({ themeColor = '#4f46e5' }: Props) {
 
           {/* Resources Links */}
           <div>
-            <h4 className="text-white font-semibold uppercase tracking-wider text-sm mb-4">Resources</h4>
+            <h4 className="text-white font-semibold uppercase tracking-wider text-sm mb-4">{t('nav.resources')}</h4>
             <ul className="space-y-3">
               {footerLinks.resources.map((link) => (
                 <li key={link.name}>
@@ -165,11 +168,14 @@ export default function Footer({ themeColor = '#4f46e5' }: Props) {
                 style={{ backgroundColor: themeColor, boxShadow: `0 0 10px ${themeColor}` }} 
               />
               <div className="text-white/50 text-sm">
-                © {year} Rhine Solution. All rights reserved.
+                {t('footer.copyright', { year })}
               </div>
             </div>
-            <div className="text-white/30 text-xs">
-              Powered by innovation
+            <div className="flex items-center gap-4">
+              <LanguageSwitcher />
+              <div className="text-white/30 text-xs">
+                Powered by innovation
+              </div>
             </div>
           </div>
         </div>
