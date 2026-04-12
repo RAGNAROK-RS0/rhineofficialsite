@@ -1,17 +1,19 @@
-const CACHE_NAME = 'rhine-solution-v1';
+const CACHE_NAME = 'rhine-solution-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
+  '/offline.html',
   '/icon.svg',
+  '/manifest.json',
 ];
 
 const CACHE_STRATEGIES = {
   cacheFirst: [
-    /\.(?:js|css)$/,
+    /\.(?:js|css|woff|woff2|ttf|eot)$/,
     /icon\.svg$/,
   ],
   networkFirst: [
-    /\.(?:png|jpg|jpeg|svg|webp)$/,
+    /\.(?:png|jpg|jpeg|svg|webp|ico)$/,
     /sitemap\.xml$/,
     /robots\.txt$/,
   ],
@@ -47,6 +49,15 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
 
   if (url.origin !== location.origin) {
+    return;
+  }
+
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request).catch(() => {
+        return caches.match('/offline.html');
+      })
+    );
     return;
   }
 
@@ -103,4 +114,27 @@ self.addEventListener('message', (event) => {
   if (event.data === 'skipWaiting') {
     self.skipWaiting();
   }
+});
+
+self.addEventListener('push', (event) => {
+  if (event.data) {
+    const data = event.data.json();
+    const options = {
+      body: data.body || 'New notification',
+      icon: '/icon.svg',
+      badge: '/icon.svg',
+      vibrate: [100, 50, 100],
+      data: {
+        url: data.url || '/',
+      },
+    };
+    event.waitUntil(self.registration.showNotification(data.title || 'Rhine Solution', options));
+  }
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    clients.openWindow(event.notification.data.url || '/')
+  );
 });
