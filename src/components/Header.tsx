@@ -6,6 +6,7 @@ import UserDropdown from './UserDropdown';
 import AuthButton from '../auth/AuthButton';
 import { useAuthModal } from '../auth/AuthModalProvider';
 
+
 type HeaderProps = {
   themeColor?: string;
   onLogoClick?: () => void;
@@ -343,10 +344,10 @@ export default function Header({
         </div>
       )}
 
-      {/* Desktop User Account Dropdown */}
-      {showAuthButtons && isDesktop && (
-        <div className="fixed top-4 right-4 z-50">
-          <UserDropdown themeColor={themeColor} />
+      {/* Desktop User Account */}
+      {(showAuthButtons || isDesktop) && isDesktop && (
+        <div className="fixed top-4 right-4 z-[60] flex items-center gap-2">
+          {showAuthButtons && <UserDropdown themeColor={themeColor} className="flex-shrink-0" />}
         </div>
       )}
 

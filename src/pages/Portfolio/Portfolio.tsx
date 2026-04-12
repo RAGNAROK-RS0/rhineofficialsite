@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import useThemeHue from '../../hooks/useThemeHue';
 import PortfolioCard from '../../components/PortfolioCard';
@@ -58,14 +59,28 @@ const placeholderProjects = [
 ];
 
 export default function Portfolio() {
-  const [activeCategory, setActiveCategory] = useState('All');
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
   const { themeColor } = useThemeHue();
+  
+  const urlCategory = searchParams.get('category');
+  const initialCategory = urlCategory && categories.includes(urlCategory) ? urlCategory : 'All';
+  const [activeCategory, setActiveCategory] = useState(initialCategory);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 800);
     return () => clearTimeout(timer);
   }, []);
+
+  const handleCategoryChange = (category: string) => {
+    setActiveCategory(category);
+    if (category === 'All') {
+      searchParams.delete('category');
+    } else {
+      searchParams.set('category', category);
+    }
+    setSearchParams(searchParams);
+  };
 
   const filteredProjects = activeCategory === 'All' 
     ? placeholderProjects 
@@ -100,7 +115,7 @@ export default function Portfolio() {
             <FilterButtons
               categories={categories}
               activeCategory={activeCategory}
-              onCategoryChange={setActiveCategory}
+              onCategoryChange={handleCategoryChange}
               themeColor={themeColor}
             />
           </div>

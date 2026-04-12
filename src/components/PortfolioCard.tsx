@@ -13,7 +13,7 @@ export default function PortfolioCard({
   category, 
   description, 
   thumbnail, 
-  slug,
+  slug: _slug,
   technologies = [],
   themeColor = '#0082D8'
 }: PortfolioCardProps) {
@@ -25,6 +25,7 @@ export default function PortfolioCard({
           <img 
             src={thumbnail} 
             alt={title} 
+            loading="lazy"
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (

@@ -63,7 +63,6 @@ export default function Admin() {
     try {
       const { data, error: authErr } = await supabase.auth.signInWithPassword({ email, password });
       if (authErr) throw authErr;
-      console.log('Signed in', data);
     } catch (err: any) {
       console.error(err);
       setError(err?.message || 'Login failed');
@@ -82,7 +81,6 @@ export default function Admin() {
     try {
       const { data, error: authErr } = await supabase.auth.signUp({ email, password });
       if (authErr) throw authErr;
-      console.log('Registered', data);
     } catch (err: any) {
       console.error(err);
       setError(err?.message || 'Registration failed');
@@ -101,7 +99,6 @@ export default function Admin() {
         redirectTo: window.location.origin + '/admin',
       });
       if (authErr) throw authErr;
-      console.log('Reset requested', data);
     } catch (err: any) {
       console.error(err);
       setError(err?.message || 'Password reset failed');

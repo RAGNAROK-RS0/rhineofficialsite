@@ -41,6 +41,12 @@ export default function Layout({
 
   return (
     <div className="app-background min-h-screen sm:min-h-[100dvh] flex flex-col relative z-10" style={backgroundStyle}>
+      <a 
+        href="#main-content" 
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-brand-primary focus:text-white focus:rounded-lg focus:font-medium"
+      >
+        Skip to main content
+      </a>
       <Suspense fallback={null}>
         <ThreeRoot />
       </Suspense>
@@ -53,7 +59,7 @@ export default function Layout({
       />
       <SocialSidebar themeColor={themeColor} />
       <ScrollToTop />
-      <main className="pt-[72px] flex-1 relative z-10">
+      <main id="main-content" className="pt-[72px] flex-1 relative z-10">
         {children}
       </main>
       <Footer themeColor={themeColor} />

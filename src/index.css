@@ -121,6 +121,42 @@
   background: #0082D8;
 }
 
+/* Focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid #0082D8;
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Ensure focus is visible on buttons */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #0082D8;
+  outline-offset: 2px;
+}
+
+/* Skip link styles */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #0082D8;
+  color: white;
+  padding: 8px 16px;
+  z-index: 100;
+  transition: top 0.3s;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
 /* Force-hide hamburger on desktop in case other CSS overrides Tailwind */
 @media (min-width: 1024px) {
   .mobile-only-hamburger {

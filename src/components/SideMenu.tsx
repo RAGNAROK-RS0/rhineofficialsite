@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { User, LogIn } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuthModal } from '../auth/AuthModalProvider';
 
@@ -29,7 +28,8 @@ export default function SideMenu({
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [user, setUser] = useState<{ id: string; email?: string; user_metadata?: Record<string, unknown> } | null>(null);
   const [userLoading, setUserLoading] = useState(true);
-  const authModal = useAuthModal();
+   
+  const _authModal = useAuthModal();
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -69,13 +69,15 @@ export default function SideMenu({
     onClose();
   };
 
-  const getUserInitials = () => {
+   
+  const _getUserInitials = () => {
     const name = String(user?.user_metadata?.full_name || user?.user_metadata?.fullName || user?.email || '');
     if (!name) return 'U';
     return name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
   };
 
-  const getDisplayName = (): string => {
+   
+  const _getDisplayName = (): string => {
     const name = user?.user_metadata?.full_name || user?.user_metadata?.fullName;
     if (name) return String(name);
     if (user?.email) return user.email.split('@')[0];
@@ -189,7 +191,18 @@ export default function SideMenu({
 
     // --- Portfolio category ---
     if (category === 'Portfolio') {
-      navigate('/portfolio');
+      const categoryMap: Record<string, string> = {
+        'All Projects': '',
+        'Web Development': 'Web Development',
+        'Cloud': 'Cloud Infrastructure',
+        'AI & Automation': 'AI & Automation'
+      };
+      const filter = categoryMap[item];
+      if (filter) {
+        navigate(`/portfolio?category=${encodeURIComponent(filter)}`);
+      } else {
+        navigate('/portfolio');
+      }
       return;
     }
 
@@ -203,7 +216,12 @@ export default function SideMenu({
       };
       const sectionId = sectionMap[item];
       if (sectionId) {
-        scrollToSection(sectionId);
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          navigate('/services');
+        }
       } else {
         navigate('/services');
       }
@@ -219,7 +237,12 @@ export default function SideMenu({
       };
       const sectionId = sectionMap[item];
       if (sectionId) {
-        scrollToSection(sectionId);
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          navigate('/solutions');
+        }
       } else {
         navigate('/solutions');
       }
@@ -235,7 +258,12 @@ export default function SideMenu({
       };
       const sectionId = sectionMap[item];
       if (sectionId) {
-        scrollToSection(sectionId);
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          navigate('/technology');
+        }
       } else {
         navigate('/technology');
       }
@@ -251,7 +279,12 @@ export default function SideMenu({
       };
       const sectionId = sectionMap[item];
       if (sectionId) {
-        scrollToSection(sectionId);
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          navigate('/resources');
+        }
       } else {
         navigate('/resources');
       }

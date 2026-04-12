@@ -4,7 +4,7 @@ import WebGPU from "three/examples/jsm/capabilities/WebGPU.js";
 
 export default function ThreeRoot(): JSX.Element {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const rootRef = useRef<Root | null>(null);  // <-- store the instance
+  const rootRef = useRef<Root | null>(null);
   const [initError, setInitError] = useState<Error | null>(null);
   const [hasWebGPU, setHasWebGPU] = useState<boolean | null>(null);
 
@@ -98,7 +98,9 @@ export default function ThreeRoot(): JSX.Element {
             } else if (scene && (scene as any).renderer && typeof (scene as any).renderer.setAnimationLoop === "function") {
               (scene as any).renderer.setAnimationLoop(null);
             }
-          } catch (e) {}
+          } catch (e) {
+            console.warn('ThreeRoot cleanup failed:', e);
+          }
         };
         // We'll replace the cleanup function later, but for now we need to keep it.
         // Instead, we'll attach the cleanup to the effect's return.
@@ -141,7 +143,7 @@ export default function ThreeRoot(): JSX.Element {
   }, []);
 
   if (hasWebGPU === false) {
-    return <div className="fixed inset-0 bg-gradient-to-br from-gray-900 to-black -z-10" aria-hidden />;
+    return <div className="fixed inset-0 bg-[#0a0a0a] -z-10" aria-hidden />;
   }
 
   return (
