@@ -68,13 +68,13 @@ export default function InfoModal({
 						</LargeCollapsable>
 						<LargeCollapsable title="Page stack" accordionName="info">
 							<div className="flex flex-col gap-1">
-								<li>Built with <a href="https://vitejs.dev/" target="_blank" className="link">Vite<img className="inline h-8 p-1 -mt-2" src="./assets/vite.svg" /></a></li>
-								<li>Keeping it clean with <a href="https://www.typescriptlang.org/" target="_blank" className="link">TypeScript<img className="inline h-8 p-1 -mt-2" src="./assets/typescript.svg" /></a></li>
-								<li>Some UI management with <a href="https://react.dev/" target="_blank" className="link">React<img className="inline h-8 p-1 -mt-2" src="./assets/react.svg" /></a></li>
+								<li>Built with <a href="https://vitejs.dev/" target="_blank" className="link">Vite<img className="inline h-8 p-1 -mt-2" src="./assets/vite.svg" alt="Vite logo" /></a></li>
+								<li>Keeping it clean with <a href="https://www.typescriptlang.org/" target="_blank" className="link">TypeScript<img className="inline h-8 p-1 -mt-2" src="./assets/typescript.svg" alt="TypeScript logo" /></a></li>
+								<li>Some UI management with <a href="https://react.dev/" target="_blank" className="link">React<img className="inline h-8 p-1 -mt-2" src="./assets/react.svg" alt="React logo" /></a></li>
 								<li>Main UI is  <a href="https://lil-gui.georgealways.com/" target="_blank" className="link">LilGUI</a></li>
-								<li>3D canvas with <a href="https://threejs.org/" target="_blank" className="link">Three.js<img className="inline h-8 p-1 -mt-2" src="./assets/three.svg" /></a></li>
+								<li>3D canvas with <a href="https://threejs.org/" target="_blank" className="link">Three.js<img className="inline h-8 p-1 -mt-2" src="./assets/three.svg" alt="Three.js logo" /></a></li>
 								{/*<li>Font is <a href="https://fonts.google.com/specimen/Rubik" target="_blank" className="link">Rubik<img className="inline h-8 p-1 -mt-2" src="./assets/googlefonts.svg" /></a></li>*/}
-								<li>Icons picked from <a href="https://icons.getbootstrap.com/" target="_blank" className="link">Bootstrap icons<img className="inline h-8 p-1 -mt-2" src="./assets/bootstrap.svg" /></a></li>
+								<li>Icons picked from <a href="https://icons.getbootstrap.com/" target="_blank" className="link">Bootstrap icons<img className="inline h-8 p-1 -mt-2" src="./assets/bootstrap.svg" alt="Bootstrap icons logo" /></a></li>
 							</div>
 						</LargeCollapsable>
 					</div>
