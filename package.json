@@ -11,6 +11,7 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
+    "test:e2e": "playwright test",
     "docker:build": "docker build -t rhine-solution .",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
@@ -39,6 +40,7 @@
     "three": "^0.167.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
