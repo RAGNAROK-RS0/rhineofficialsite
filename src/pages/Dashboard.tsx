@@ -4,7 +4,10 @@ import Layout from '../components/Layout';
 import { supabase } from '../lib/supabase';
 import SettingsModal from '../components/SettingsModal';
 import TeamSettingsModal from '../components/TeamSettingsModal';
-import { Eye, X, HardDrive, Plus, HelpCircle, Edit2, Copy, Clock, TrendingUp, Search, Folder, User } from 'lucide-react';
+import TeamChat from '../components/TeamChat';
+import FileSharing from '../components/FileSharing';
+import DashboardCharts from '../components/DashboardCharts';
+import { Eye, X, HardDrive, Plus, HelpCircle, Edit2, Copy, Clock, TrendingUp, Search, Folder, User, MessageSquare, FileText } from 'lucide-react';
 import { Joyride, STATUS } from 'react-joyride';
 import type { Step, TooltipRenderProps, Props as JoyrideProps } from 'react-joyride';
 
@@ -195,6 +198,10 @@ export default function Dashboard(): JSX.Element {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [teamMembersLoading, setTeamMembersLoading] = useState(false);
   const [teamMembersError, setTeamMembersError] = useState<string | null>(null);
+
+  // Team features (Phase 25)
+  const [teamChatOpen, setTeamChatOpen] = useState(false);
+  const [fileSharingOpen, setFileSharingOpen] = useState(false);
 
   // Onboarding tour state
   const [runTour, setRunTour] = useState(false);
@@ -638,7 +645,12 @@ export default function Dashboard(): JSX.Element {
                       <Plus className="w-4 h-4 text-white" />
                     </button>
                   </div>
-                </div>
+                  </div>
+              </div>
+
+              {/* Dashboard Charts */}
+              <div className="mt-8">
+                <DashboardCharts />
               </div>
 
               {/* Main content: Projects & Activity */}
@@ -852,6 +864,20 @@ export default function Dashboard(): JSX.Element {
               )}
 
               <button onClick={handleTeamSettings} className="mt-4 w-full p-3 rounded-xl bg-white/5 border border-white/20 text-white/70 hover:bg-white/10 transition-colors text-sm">Manage Team</button>
+              
+              <div className="mt-4 p-4 rounded-xl bg-black/80 backdrop-blur-xl border border-white/20 shadow-2xl">
+                <h3 className="text-sm text-white/60 mb-3">Team Features</h3>
+                <div className="space-y-2">
+                  <button onClick={() => setTeamChatOpen(true)} className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
+                    <MessageSquare className="w-4 h-4 text-brand-primary" />
+                    <span className="text-sm text-white">Team Chat</span>
+                  </button>
+                  <button onClick={() => setFileSharingOpen(true)} className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
+                    <FileText className="w-4 h-4 text-brand-primary" />
+                    <span className="text-sm text-white">File Sharing</span>
+                  </button>
+                </div>
+              </div>
             </aside>
           </div>
         </div>
@@ -860,6 +886,24 @@ export default function Dashboard(): JSX.Element {
       <SettingsModal isOpen={accountSettingsOpen} onClose={() => setAccountSettingsOpen(false)} />
       <TeamSettingsModal isOpen={teamSettingsOpen} onClose={() => setTeamSettingsOpen(false)} />
       <NotificationModal />
+      
+      {teamChatOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setTeamChatOpen(false)} />
+          <div className="relative w-full max-w-4xl max-h-[90vh] overflow-auto">
+            <TeamChat onClose={() => setTeamChatOpen(false)} />
+          </div>
+        </div>
+      )}
+      
+      {fileSharingOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setFileSharingOpen(false)} />
+          <div className="relative w-full max-w-4xl max-h-[90vh] overflow-auto">
+            <FileSharing onClose={() => setFileSharingOpen(false)} />
+          </div>
+        </div>
+      )}
 
       <button onClick={() => setRunTour(true)} className="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-black text-white shadow-2xl hover:bg-black/25 transition-all duration-200" aria-label="Start onboarding tour">
         <HelpCircle className="w-6 h-6" />
