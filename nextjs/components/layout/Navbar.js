@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useAuth } from '../AuthProvider'
 import { useCart } from '../CartProvider'
+import { useWishlist } from '../WishlistProvider'
+import { useSearch } from '../SearchContext'
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -20,6 +22,8 @@ export default function Navbar() {
   const pathname = usePathname()
   const { user, isAuthenticated, signOut } = useAuth()
   const { cartCount, setIsOpen: setCartOpen } = useCart()
+  const { count: wishlistCount } = useWishlist()
+  const { open: openSearch } = useSearch()
   
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
@@ -68,6 +72,18 @@ export default function Navbar() {
                 >
                   Dashboard
                 </Link>
+                <Link 
+                  href="/profile"
+                  className="px-4 py-2 text-sm font-medium text-zinc-400 hover:text-white transition-colors hover-lift"
+                >
+                  Profile
+                </Link>
+                <Link 
+                  href="/orders"
+                  className="px-4 py-2 text-sm font-medium text-zinc-400 hover:text-white transition-colors hover-lift"
+                >
+                  Orders
+                </Link>
                 {user?.role === 'admin' && (
                   <Link 
                     href="/admin"
@@ -100,6 +116,32 @@ export default function Navbar() {
               </>
             )}
           </div>
+
+          {/* Search Button */}
+          <button
+            onClick={openSearch}
+            className="hidden md:flex p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors"
+            title="Search (Ctrl+K)"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+
+          {/* Wishlist Button */}
+          <Link
+            href="/wishlist"
+            className="hidden md:flex relative p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            {wishlistCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-pink-600 text-white text-xs rounded-full flex items-center justify-center">
+                {wishlistCount}
+              </span>
+            )}
+          </Link>
 
           {/* Cart Button */}
           <button
@@ -173,6 +215,20 @@ export default function Navbar() {
                     className="block text-center px-4 py-2 text-base text-zinc-300 border border-zinc-700 rounded-lg"
                   >
                     Dashboard
+                  </Link>
+                  <Link 
+                    href="/profile"
+                    onClick={() => setIsOpen(false)}
+                    className="block text-center px-4 py-2 text-base text-zinc-300 border border-zinc-700 rounded-lg"
+                  >
+                    Profile
+                  </Link>
+                  <Link 
+                    href="/orders"
+                    onClick={() => setIsOpen(false)}
+                    className="block text-center px-4 py-2 text-base text-zinc-300 border border-zinc-700 rounded-lg"
+                  >
+                    Orders
                   </Link>
                   <button 
                     onClick={() => { signOut(); setIsOpen(false); }}

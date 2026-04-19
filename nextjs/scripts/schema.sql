@@ -224,6 +224,32 @@ CREATE TABLE public.contacts (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- ===============================================
+-- PRODUCT REVIEWS
+-- ===============================================
+CREATE TABLE public.reviews (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  product_id UUID REFERENCES public.products(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+  comment TEXT,
+  is_approved BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.reviews ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can view approved reviews" ON public.reviews
+  FOR SELECT USING (is_approved = true);
+
+CREATE POLICY "Users can create reviews" ON public.reviews
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Admins can manage reviews" ON public.reviews
+  FOR ALL USING (
+    EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
 ALTER TABLE public.contacts ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Anyone can create contacts" ON public.contacts

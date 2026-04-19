@@ -4,7 +4,11 @@ import Footer from '../components/layout/Footer'
 import { ToastProvider } from '../components/ui/Toast'
 import { AuthProvider } from '../components/AuthProvider'
 import { CartProvider } from '../components/CartProvider'
+import { WishlistProvider } from '../components/WishlistProvider'
+import { NotificationProvider } from '../components/NotificationProvider'
+import { SearchProvider } from '../components/SearchContext'
 import CartSidebar from '../components/CartSidebar'
+import SearchModal from '../components/SearchModal'
 
 export const dynamic = 'force-dynamic'
 
@@ -46,12 +50,19 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <ToastProvider>
             <CartProvider>
-              <Navbar />
-              <CartSidebar />
-              <main className="min-h-screen pt-16">
-                {children}
-              </main>
-              <Footer />
+              <WishlistProvider>
+                <NotificationProvider>
+                  <SearchProvider>
+                    <Navbar />
+                    <CartSidebar />
+                    <SearchModal />
+                    <main className="min-h-screen pt-16">
+                      {children}
+                    </main>
+                    <Footer />
+                  </SearchProvider>
+                </NotificationProvider>
+              </WishlistProvider>
             </CartProvider>
           </ToastProvider>
         </AuthProvider>

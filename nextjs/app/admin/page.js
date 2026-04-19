@@ -6,27 +6,19 @@ import Card, { CardContent, CardTitle } from '../../components/ui/Card'
 import Button from '../../components/ui/Button'
 import { useAuth } from '../../components/AuthProvider'
 
-const adminStats = [
-  { label: 'Total Users', value: '156', change: '+12%', icon: '👥' },
-  { label: 'Total Orders', value: '89', change: '+8%', icon: '📦' },
-  { label: 'Revenue', value: '$12,450', change: '+23%', icon: '💰' },
-  { label: 'Products', value: '42', change: '+5%', icon: '🏷️' },
-]
-
-const recentActivity = [
-  { type: 'order', message: 'New order #1234 placed', time: '2 min ago' },
-  { type: 'user', message: 'New user registered: john@example.com', time: '15 min ago' },
-  { type: 'product', message: 'Product "Wireless Headphones" updated', time: '1 hour ago' },
-  { type: 'contact', message: 'New contact form submission', time: '2 hours ago' },
-]
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://crqjedivobupxbbathux.supabase.co'
+const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNycWplZGl2b2J1cHhiYmF0aHV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3OTA5MDEsImV4cCI6MjA5MDM2NjkwMX0.0_HAu_sj7j-3racZK9nWIghKdNEXWRTHgLme2sUMAhM'
 
 export default function AdminPage() {
   const router = useRouter()
   const { user, loading: authLoading, isAuthenticated, isAdmin } = useAuth()
   const [activeSection, setActiveSection] = useState('overview')
   const [products, setProducts] = useState([])
-  const [users, setUsers] = useState([])
+  const [orders, setOrders] = useState([])
+  const [contacts, setContacts] = useState([])
+  const [destinations, setDestinations] = useState([])
   const [loading, setLoading] = useState(true)
+  const [stats, setStats] = useState({ users: 0, orders: 0, revenue: 0, products: 0 })
 
   useEffect(() => {
     if (!authLoading && (!isAuthenticated || !isAdmin)) {
@@ -53,25 +45,66 @@ export default function AdminPage() {
 
   async function fetchData() {
     try {
-      const productsRes = await fetch(
-        'https://crqjedivobupxbbathux.supabase.co/rest/v1/products?select=*',
-        {
-          headers: {
-            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNycWplZGl2b2J1cHhiYmF0aHV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3OTA5MDEsImV4cCI6MjA5MDM2NjkwMX0.0_HAu_sj7j-3racZK9nWIghKdNEXWRTHgLme2sUMAhM',
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNycWplZGl2b2J1cHhiYmF0aHV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3OTA5MDEsImV4cCI6MjA5MDM2NjkwMX0.0_HAu_sj7j-3racZK9nWIghKdNEXWRTHgLme2sUMAhM'
-          }
-        }
-      )
-      const productsData = await productsRes.json()
-      if (Array.isArray(productsData)) {
-        setProducts(productsData)
+      const headers = {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
       }
+
+      const [productsRes, ordersRes, contactsRes, destinationsRes, profilesRes] = await Promise.all([
+        fetch(`${SUPABASE_URL}/rest/v1/products?select=*`, { headers }),
+        fetch(`${SUPABASE_URL}/rest/v1/orders?select=*`, { headers }),
+        fetch(`${SUPABASE_URL}/rest/v1/contacts?select=*`, { headers }),
+        fetch(`${SUPABASE_URL}/rest/v1/destinations?select=*`, { headers }),
+        fetch(`${SUPABASE_URL}/rest/v1/profiles?select=*`, { headers })
+      ])
+
+      const productsData = await productsRes.json()
+      const ordersData = await ordersRes.json()
+      const contactsData = await contactsRes.json()
+      const destinationsData = await destinationsRes.json()
+      const profilesData = await profilesRes.json()
+
+      setProducts(Array.isArray(productsData) ? productsData : [])
+      setOrders(Array.isArray(ordersData) ? ordersData : [])
+      setContacts(Array.isArray(contactsData) ? contactsData : [])
+      setDestinations(Array.isArray(destinationsData) ? destinationsData : [])
+
+      const totalRevenue = Array.isArray(ordersData) 
+        ? ordersData.reduce((sum, o) => sum + (parseFloat(o.total) || 0), 0) 
+        : 0
+
+      setStats({
+        users: Array.isArray(profilesData) ? profilesData.length : 0,
+        orders: ordersData.length || 0,
+        revenue: totalRevenue,
+        products: productsData.length || 0,
+        destinations: destinationsData.length || 0,
+        contacts: contactsData.length || 0
+      })
     } catch (error) {
       console.error('Error fetching data:', error)
     } finally {
       setLoading(false)
     }
   }
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount || 0)
+  }
+
+  const adminStats = [
+    { label: 'Total Users', value: stats.users, change: '+5%', icon: '👥' },
+    { label: 'Total Orders', value: stats.orders, change: '+8%', icon: '📦' },
+    { label: 'Revenue', value: formatCurrency(stats.revenue), change: '+12%', icon: '💰' },
+    { label: 'Products', value: stats.products, change: '+3%', icon: '🏷️' },
+  ]
+
+  const recentActivity = [
+    { type: 'order', message: `New order #${orders[0]?.id?.slice(0, 8) || 'N/A'} placed`, time: orders[0] ? new Date(orders[0].created_at).toLocaleString() : 'N/A' },
+    { type: 'contact', message: `${stats.contacts} contact messages`, time: 'Total' },
+    { type: 'product', message: `${stats.products} products available`, time: 'Total' },
+    { type: 'destination', message: `${stats.destinations} travel destinations`, time: 'Total' },
+  ]
 
   const menuItems = [
     { id: 'overview', label: 'Overview', icon: '📊' },
