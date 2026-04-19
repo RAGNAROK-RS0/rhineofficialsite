@@ -188,9 +188,17 @@ function BookingContent() {
   )
 }
 
+function Loading() {
+  return (
+    <div className="min-h-screen py-20 text-center">
+      <div className="text-zinc-400">Loading...</div>
+    </div>
+  )
+}
+
 export default function BookingPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen py-20 text-center">Loading...</div>}>
+    <Suspense fallback={<Loading />}>
       <BookingContent />
     </Suspense>
   )

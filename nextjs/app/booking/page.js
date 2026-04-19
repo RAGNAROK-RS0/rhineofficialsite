@@ -1,6 +1,6 @@
 'use client'
 
-import { useSearchParams, Suspense } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useState } from 'react'
 
@@ -33,7 +33,6 @@ function BookingContent() {
     e.preventDefault()
     setSubmitting(true)
     
-    // Demo mode - just simulate a successful booking
     await new Promise(resolve => setTimeout(resolve, 1000))
     
     setSubmitted(true)
@@ -191,9 +190,20 @@ function BookingContent() {
   )
 }
 
+function Loading() {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div style={{ textAlign: 'center' }}>
+        <span style={{ fontSize: '3rem' }}>✈️</span>
+        <p style={{ marginTop: '16px', color: '#a1a1aa' }}>Loading...</p>
+      </div>
+    </div>
+  )
+}
+
 export default function Booking() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+    <Suspense fallback={<Loading />}>
       <BookingContent />
     </Suspense>
   )
