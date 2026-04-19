@@ -1,49 +1,66 @@
 # Rhine Official Site
 
-A comprehensive developer portfolio and web application demonstrating full-stack development skills across multiple technologies: Python, PHP, Laravel, React/Next.js, and Svelte.
+A comprehensive developer portfolio and web application demonstrating full-stack development skills across multiple technologies.
 
-## 🛠️ Tech Stack Demonstrated
+## Tech Stack Demonstrated
 
 | Technology | Purpose | Status |
 |------------|---------|--------|
-| Python | CLI tools, automation | Planning |
-| PHP | Legacy web development | Planning |
-| Laravel | Full-stack framework | Planning |
-| HTML/CSS | Frontend fundamentals | Planning |
-| JavaScript | Client-side interactivity | Planning |
-| React/Next.js | Modern frontend | Planning |
-| Svelte | Lightweight frontend | Planning |
-| Supabase | Backend-as-a-Service | Setup |
-| Cloudflare | Hosting & CDN | Setup |
+| Python | CLI tools, fundamentals | ✅ Complete |
+| PHP | Web development, sessions | ✅ Complete |
+| Laravel | Full-stack framework | 🔧 Ready |
+| HTML/CSS/JS | Frontend fundamentals | ✅ Complete |
+| React/Next.js | Modern frontend | 🔧 Ready |
+| Svelte | Lightweight frontend | 🔧 Ready |
+| Supabase | Backend-as-a-Service | ✅ Setup |
+| Cloudflare | Hosting & CDN | 🔧 Ready |
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 rhineofficialsite/
-├── python/           # Python learning & CLI tools
-├── php/              # PHP implementations
-├── laravel/          # Laravel full-stack app
-├── frontend/          # HTML/CSS/JS portfolio
-├── nextjs/           # Next.js application
-├── svelte/           # Svelte/SvelteKit app
+├── python/           # Python demos (chatbot, bookmanager)
+├── php/              # PHP webshop (cart, auth, orders)
+├── laravel/          # Laravel jobboard (to be built)
+├── frontend/         # HTML/CSS portfolio site
+├── nextjs/           # Next.js app (to be built)
+├── svelte/           # Svelte app (to be built)
 ├── supabase/         # Database schema & config
-└── docs/             # Documentation
+└── .github/          # CI/CD workflows
 ```
 
-## 🚀 Getting Started
+## Quick Start
 
-Each sub-project has its own README with setup instructions.
+### Frontend (HTML/CSS/JS)
+```bash
+cd frontend
+# Open index.html in browser
+```
 
-## 📚 Learning Path
+### PHP Webshop
+```bash
+cd php
+php -S localhost:8000
+# Open http://localhost:8000
+```
 
-This project follows the comprehensive roadmap from `roadmap.mmd` in the parent directory.
+### Python Demos
+```bash
+cd python
+python chatbot.py
+python bookmanager.py
+```
 
-## 🔗 Links
+## Demo Credentials
+- PHP Shop: demo@rhine.dev / demo123
 
-- [Supabase Dashboard](https://supabase.com)
-- [Cloudflare Dashboard](https://cloudflare.com)
-- [GitHub Repository](#)
+## Supabase
+- Project: rhine-solution (crqjedivobupxbbathux)
+- Tables: users, books, products, orders, order_items, reviews, projects, appointments
 
-## 📄 License
+## GitHub
+- Repository: rhineofficialsite
+- CI/CD: GitHub Actions configured
 
+## License
 MIT
