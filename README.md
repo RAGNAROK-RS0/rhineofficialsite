@@ -1,66 +1,67 @@
 # Rhine Official Site
 
-A comprehensive developer portfolio and web application demonstrating full-stack development skills across multiple technologies.
+A React + TypeScript website with Three.js 3D effects, Supabase auth, and modern UI. Plus comprehensive developer portfolio demonstrating multiple technologies.
 
-## Tech Stack Demonstrated
+## Tech Stack
 
+### Production Site (Live)
+- **Frontend**: React 18, TypeScript, Vite
+- **Styling**: Tailwind CSS, DaisyUI
+- **3D**: Three.js, WebGPU
+- **Auth**: Supabase
+- **Routing**: React Router DOM
+
+### Learning Projects (This Repo)
 | Technology | Purpose | Status |
 |------------|---------|--------|
 | Python | CLI tools, fundamentals | ✅ Complete |
-| PHP | Web development, sessions | ✅ Complete |
-| Laravel | Full-stack framework | 🔧 Ready |
+| PHP | Web development | ✅ Complete |
+| PHP 2 | OOP Portfolio | ✅ Complete |
+| Laravel | Full-stack framework | 🔧 Blueprint |
 | HTML/CSS/JS | Frontend fundamentals | ✅ Complete |
-| React/Next.js | Modern frontend | 🔧 Ready |
-| Svelte | Lightweight frontend | 🔧 Ready |
+| Next.js | React framework | ✅ Complete |
+| Svelte | Lightweight frontend | ✅ Complete |
 | Supabase | Backend-as-a-Service | ✅ Setup |
-| Cloudflare | Hosting & CDN | 🔧 Ready |
+
+## Quick Start
+
+### Production Site
+```bash
+npm run dev      # Start development server
+npm run build    # Build for production
+```
+
+### Learning Projects
+```bash
+# Python demos
+cd python && python chatbot.py
+
+# PHP Webshop
+cd php && php -S localhost:8000
+
+# Next.js app
+cd nextjs && npm install && npm run dev
+```
 
 ## Project Structure
 
 ```
 rhineofficialsite/
-├── python/           # Python demos (chatbot, bookmanager)
-├── php/              # PHP webshop (cart, auth, orders)
-├── laravel/          # Laravel jobboard (to be built)
-├── frontend/         # HTML/CSS portfolio site
-├── nextjs/           # Next.js app (to be built)
-├── svelte/           # Svelte app (to be built)
-├── supabase/         # Database schema & config
-└── .github/          # CI/CD workflows
+├── src/                  # Production React app
+├── python/               # Python learning demos
+├── php/                  # PHP webshop
+├── php2/                 # PHP OOP Portfolio
+├── laravel/              # Laravel job board
+├── frontend/             # HTML/CSS portfolio
+├── nextjs/               # Next.js Sunny Travels
+├── svelte/               # Svelte appointments
+├── supabase/             # Database schema
+└── docs/                 # Planning docs
 ```
 
-## Quick Start
-
-### Frontend (HTML/CSS/JS)
-```bash
-cd frontend
-# Open index.html in browser
-```
-
-### PHP Webshop
-```bash
-cd php
-php -S localhost:8000
-# Open http://localhost:8000
-```
-
-### Python Demos
-```bash
-cd python
-python chatbot.py
-python bookmanager.py
-```
-
-## Demo Credentials
-- PHP Shop: demo@rhine.dev / demo123
-
-## Supabase
-- Project: rhine-solution (crqjedivobupxbbathux)
-- Tables: users, books, products, orders, order_items, reviews, projects, appointments
-
-## GitHub
-- Repository: rhineofficialsite
-- CI/CD: GitHub Actions configured
+## Domain
+- **Live**: https://rhinesolution.com
+- **Pages**: https://rhineofficialsite.pages.dev
 
 ## License
 MIT
