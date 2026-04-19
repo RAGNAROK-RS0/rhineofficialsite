@@ -1,8 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Card, { CardContent, CardTitle } from '../../components/ui/Card'
 import Button from '../../components/ui/Button'
+import { useAuth } from '../../components/AuthProvider'
 
 const adminStats = [
   { label: 'Total Users', value: '156', change: '+12%', icon: '👥' },
@@ -19,14 +21,35 @@ const recentActivity = [
 ]
 
 export default function AdminPage() {
+  const router = useRouter()
+  const { user, loading: authLoading, isAuthenticated, isAdmin } = useAuth()
   const [activeSection, setActiveSection] = useState('overview')
   const [products, setProducts] = useState([])
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetchData()
-  }, [])
+    if (!authLoading && (!isAuthenticated || !isAdmin)) {
+      router.push('/login')
+    }
+  }, [authLoading, isAuthenticated, isAdmin, router])
+
+  useEffect(() => {
+    if (isAdmin) {
+      fetchData()
+    }
+  }, [isAdmin])
+
+  if (authLoading || !isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-zinc-400">Loading...</p>
+        </div>
+      </div>
+    )
+  }
 
   async function fetchData() {
     try {
