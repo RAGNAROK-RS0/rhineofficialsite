@@ -1,6 +1,0 @@
-name = "rhineofficialsite"
-compatibility_date = "2026-04-19"
-pages_build_output_dir = ".vercel/output/static"
-
-[site]
-bucket = ".vercel/output/static"

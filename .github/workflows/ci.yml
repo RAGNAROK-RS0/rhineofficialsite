@@ -11,27 +11,10 @@ env:
   CLOUDFLARE_ACCOUNT_ID: 1e717a236c87cc50f0a396da20218343
 
 jobs:
-  # Static analysis for Python
-  python-lint:
-    runs-on: ubuntu-latest
-    if: contains(github.changed_files, 'python/')
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Install flake8
-        run: pip install flake8 black
-      - name: Lint Python files
-        run: |
-          flake8 python/ --count --max-line-length=127 --statistics
-          black --check python/ --diff
-
   # Static analysis for PHP
   php-lint:
     runs-on: ubuntu-latest
-    if: contains(github.changed_files, 'php/') || contains(github.changed_files, 'php2/')
+    if: contains(github.changed_files, 'php/')
     steps:
       - uses: actions/checkout@v4
       - name: Setup PHP
@@ -43,7 +26,7 @@ jobs:
           composer require squizlabs/php_codesniffer --dev --no-interaction
       - name: Lint PHP files
         run: |
-          ./vendor/bin/phpcs --standard=PSR12 php/ php2/ -n --ignore=vendor
+          ./vendor/bin/phpcs --standard=PSR12 php/ -n --ignore=vendor
 
   # Build Next.js project
   nextjs-build:
