@@ -74,7 +74,6 @@ jobs:
 
   # Deploy frontend to Cloudflare Pages
   deploy-frontend:
-    needs: [nextjs-build, svelte-build]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
